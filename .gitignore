@@ -1,3 +1,4 @@
-.vscode/
+.vscode/*
 export/
+export/html5/
 krita_projects/
