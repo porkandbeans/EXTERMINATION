@@ -912,7 +912,7 @@ ApplicationMain.main = function() {
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
 	ManifestResources.init(config);
-	app.meta.h["build"] = "89";
+	app.meta.h["build"] = "4";
 	app.meta.h["company"] = "HaxeFlixel";
 	app.meta.h["file"] = "SideScroller";
 	app.meta.h["name"] = "SideScroller";
@@ -4430,6 +4430,7 @@ flixel_group_FlxTypedGroup.prototype = $extend(flixel_FlxBasic.prototype,{
 var HUD = function() {
 	flixel_group_FlxTypedGroup.call(this);
 	this._floatyBar = new flixel_ui_FlxBar(10,5,flixel_ui_FlxBarFillDirection.LEFT_TO_RIGHT,flixel_FlxG.width - 20,20,null,"_floatPower",0,100,true);
+	this._floatyBar.set_alpha(0);
 	this.add(this._floatyBar);
 	this.forEach(function(sprite) {
 		sprite.scrollFactor.set(0,0);
@@ -4446,6 +4447,15 @@ HUD.prototype = $extend(flixel_group_FlxTypedGroup.prototype,{
 	}
 	,update: function(elapsed) {
 		this._floatyBar.set_value(this._floatPower);
+		if(this._floatPower < 100) {
+			var fh = this._floatyBar;
+			fh.set_alpha(fh.alpha + 0.01);
+		} else {
+			while(this._floatyBar.alpha < 1) {
+				var fh = this._floatyBar;
+				fh.set_alpha(fh.alpha - 0.01);
+			}
+		}
 		flixel_group_FlxTypedGroup.prototype.update.call(this,elapsed);
 	}
 	,__class__: HUD
@@ -4553,7 +4563,7 @@ ManifestResources.init = function(config) {
 	openfl_text_Font.registerFont(_$_$ASSET_$_$OPENFL_$_$flixel_$fonts_$nokiafc22_$ttf);
 	openfl_text_Font.registerFont(_$_$ASSET_$_$OPENFL_$_$flixel_$fonts_$monsterrat_$ttf);
 	var bundle;
-	var data = "{\"name\":null,\"assets\":\"aoy4:pathy29:assets%2Flevels%2Flevel1.jsony4:sizei4348y4:typey4:TEXTy2:idR1y7:preloadtgoR0y29:assets%2Flevels%2Fhworld.ogmoR2i2916R3R4R5R7R6tgoR0y36:assets%2Fimages%2Fimages-go-here.txtR2zR3R4R5R8R6tgoR0y36:assets%2Fmusic%2Fmusic-goes-here.txtR2zR3R4R5R9R6tgoR0y36:assets%2Fsounds%2Fsounds-go-here.txtR2zR3R4R5R10R6tgoR0y34:assets%2Fdata%2Fdata-goes-here.txtR2zR3R4R5R11R6tgoR0y31:assets%2Fdata%2Ftilewall.png%7ER2i562R3y6:BINARYR5R12R6tgoR0y28:assets%2Fdata%2Ftilewall.pngR2i650R3y5:IMAGER5R14R6tgoR2i2114R3y5:MUSICR5y26:flixel%2Fsounds%2Fbeep.mp3y9:pathGroupaR17y26:flixel%2Fsounds%2Fbeep.ogghR6tgoR2i39706R3R16R5y28:flixel%2Fsounds%2Fflixel.mp3R18aR20y28:flixel%2Fsounds%2Fflixel.ogghR6tgoR2i5794R3y5:SOUNDR5R19R18aR17R19hgoR2i33629R3R22R5R21R18aR20R21hgoR2i15744R3y4:FONTy9:classNamey35:__ASSET__flixel_fonts_nokiafc22_ttfR5y30:flixel%2Ffonts%2Fnokiafc22.ttfR6tgoR2i29724R3R23R24y36:__ASSET__flixel_fonts_monsterrat_ttfR5y31:flixel%2Ffonts%2Fmonsterrat.ttfR6tgoR0y33:flixel%2Fimages%2Fui%2Fbutton.pngR2i519R3R15R5R29R6tgoR0y36:flixel%2Fimages%2Flogo%2Fdefault.pngR2i3280R3R15R5R30R6tgh\",\"rootPath\":null,\"version\":2,\"libraryArgs\":[],\"libraryType\":null}";
+	var data = "{\"name\":null,\"assets\":\"aoy4:pathy29:assets%2Flevels%2Flevel1.jsony4:sizei4348y4:typey4:TEXTy2:idR1y7:preloadtgoR0y29:assets%2Flevels%2Fhworld.ogmoR2i2916R3R4R5R7R6tgoR0y36:assets%2Fimages%2Fimages-go-here.txtR2zR3R4R5R8R6tgoR0y40:assets%2Fimages%2FPlayer%2Fruncycle1.gifR2i2047R3y5:IMAGER5R9R6tgoR0y35:assets%2Fimages%2FPlayer%2Fidle.pngR2i695R3R10R5R11R6tgoR0y37:assets%2Fimages%2FPlayer%2Fplayer.pngR2i2268R3R10R5R12R6tgoR0y40:assets%2Fimages%2FPlayer%2Fplayer.png%7ER2i2249R3y6:BINARYR5R13R6tgoR0y36:assets%2Fmusic%2Fmusic-goes-here.txtR2zR3R4R5R15R6tgoR0y36:assets%2Fsounds%2Fsounds-go-here.txtR2zR3R4R5R16R6tgoR0y34:assets%2Fdata%2Fdata-goes-here.txtR2zR3R4R5R17R6tgoR0y31:assets%2Fdata%2Ftilewall.png%7ER2i562R3R14R5R18R6tgoR0y28:assets%2Fdata%2Ftilewall.pngR2i650R3R10R5R19R6tgoR2i2114R3y5:MUSICR5y26:flixel%2Fsounds%2Fbeep.mp3y9:pathGroupaR21y26:flixel%2Fsounds%2Fbeep.ogghR6tgoR2i39706R3R20R5y28:flixel%2Fsounds%2Fflixel.mp3R22aR24y28:flixel%2Fsounds%2Fflixel.ogghR6tgoR2i5794R3y5:SOUNDR5R23R22aR21R23hgoR2i33629R3R26R5R25R22aR24R25hgoR2i15744R3y4:FONTy9:classNamey35:__ASSET__flixel_fonts_nokiafc22_ttfR5y30:flixel%2Ffonts%2Fnokiafc22.ttfR6tgoR2i29724R3R27R28y36:__ASSET__flixel_fonts_monsterrat_ttfR5y31:flixel%2Ffonts%2Fmonsterrat.ttfR6tgoR0y33:flixel%2Fimages%2Fui%2Fbutton.pngR2i519R3R10R5R33R6tgoR0y36:flixel%2Fimages%2Flogo%2Fdefault.pngR2i3280R3R10R5R34R6tgh\",\"rootPath\":null,\"version\":2,\"libraryArgs\":[],\"libraryType\":null}";
 	var manifest = lime_utils_AssetManifest.parse(data,ManifestResources.rootPath);
 	var library = lime_utils_AssetLibrary.fromManifest(manifest);
 	lime_utils_Assets.registerLibrary("default",library);
@@ -7513,7 +7523,9 @@ var Player = function(x,y) {
 	this.maxVelocity.set(200,200);
 	this.acceleration.set_y(this._weight);
 	this.drag.set_x(this.maxVelocity.x * 5);
-	this.makeGraphic(16,16,-16776961);
+	this.loadGraphic("assets/images/Player/player.png",true,32,32);
+	this.animation.add("idle",[0]);
+	this.animation.add("run",[1,2,3,4,5,6,7,8],9,true);
 };
 $hxClasses["Player"] = Player;
 Player.__name__ = "Player";
@@ -7533,6 +7545,19 @@ Player.prototype = $extend(flixel_FlxSprite.prototype,{
 	,update: function(elapsed) {
 		this.acceleration.set_x(0);
 		this.acceleration.set_y(this._weight);
+		this.keyListeners();
+		if(this.velocity.x == 0) {
+			this.animation.play("idle");
+		} else if(this.velocity.x > 0) {
+			this.set_flipX(false);
+			this.animation.play("run");
+		} else {
+			this.set_flipX(true);
+			this.animation.play("run");
+		}
+		flixel_FlxSprite.prototype.update.call(this,elapsed);
+	}
+	,keyListeners: function() {
 		if(flixel_FlxG.keys.checkKeyArrayState([37,65],1)) {
 			this.acceleration.set_x(-this.maxVelocity.x * 7);
 		}
@@ -7550,7 +7575,6 @@ Player.prototype = $extend(flixel_FlxSprite.prototype,{
 		if((this.touching & 4096) > 0) {
 			this.floatyPower = 100;
 		}
-		flixel_FlxSprite.prototype.update.call(this,elapsed);
 	}
 	,__class__: Player
 });
@@ -72682,7 +72706,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 705525;
+	this.version = 12769;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";

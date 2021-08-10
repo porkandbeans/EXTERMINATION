@@ -28,10 +28,9 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 		add(_tilemap);
 
-		/*text = new FlxText(0,0,0, "doing chores", 32);
-		text.screenCenter();
-		add(text);
-		*/
+		/*	text = new FlxText(0,0,0, "doing chores", 32);
+			text.screenCenter();
+			add(text); */
 
 		_player = new Player();
 		_map.loadEntities(placeEntities, "entities");
@@ -51,7 +50,7 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		_hud.updateBar(_player.floatyPower);
+		_hud.updateBar(_player.floatyPower); // gets the floating juice left in the player, sends it to the HUD
 		collisions();
 
 		FlxG.camera.follow(_player, PLATFORMER, 1);

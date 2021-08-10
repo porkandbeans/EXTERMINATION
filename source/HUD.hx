@@ -10,9 +10,9 @@ class HUD extends FlxTypedGroup<FlxSprite>{
     var _floatPower:Float;
 
     public function new(){
-        super();
-
+		super();
         _floatyBar = new FlxBar(10, 5, LEFT_TO_RIGHT, (FlxG.width - 20), 20, null, "_floatPower", 0, 100, true);
+		_floatyBar.alpha = 0;
         add(_floatyBar);
         forEach(function(sprite) { // ???????
             sprite.scrollFactor.set(0,0);
@@ -25,6 +25,17 @@ class HUD extends FlxTypedGroup<FlxSprite>{
 
     override public function update(elapsed:Float){
 		_floatyBar.value = _floatPower;
+		if (_floatPower < 100)
+		{
+			_floatyBar.alpha += 0.01;
+		}
+		else
+		{
+			while (_floatyBar.alpha < 1)
+			{
+				_floatyBar.alpha -= 0.01;
+			}
+		}
         super.update(elapsed);
     }
 }
