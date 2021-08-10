@@ -20,6 +20,7 @@ class Player extends FlxSprite
         acceleration.y = _weight;
         drag.x = maxVelocity.x * 5;
 
+
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
 		animation.add("idle", [0]);
 		animation.add("run", [1, 2, 3, 4, 5, 6, 7, 8], 9, true);

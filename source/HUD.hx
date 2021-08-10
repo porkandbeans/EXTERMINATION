@@ -1,5 +1,7 @@
 package;
 
+import flixel.util.FlxColor;
+import flixel.tweens.misc.ColorTween;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -12,6 +14,7 @@ class HUD extends FlxTypedGroup<FlxSprite>{
     public function new(){
 		super();
         _floatyBar = new FlxBar(10, 5, LEFT_TO_RIGHT, (FlxG.width - 20), 20, null, "_floatPower", 0, 100, true);
+        _floatyBar.createFilledBar(null, FlxColor.WHITE, true, FlxColor.BLACK);
 		_floatyBar.alpha = 0;
         add(_floatyBar);
         forEach(function(sprite) { // ???????
@@ -27,14 +30,15 @@ class HUD extends FlxTypedGroup<FlxSprite>{
 		_floatyBar.value = _floatPower;
 		if (_floatPower < 100)
 		{
-			_floatyBar.alpha += 0.01;
+            if (_floatyBar.alpha < 1){
+                _floatyBar.alpha += 0.1;
+			}
 		}
 		else
 		{
-			while (_floatyBar.alpha < 1)
-			{
-				_floatyBar.alpha -= 0.01;
-			}
+			if (_floatyBar.alpha > 0){
+                _floatyBar.alpha -= 0.1;
+            }
 		}
         super.update(elapsed);
     }

@@ -912,7 +912,7 @@ ApplicationMain.main = function() {
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
 	ManifestResources.init(config);
-	app.meta.h["build"] = "4";
+	app.meta.h["build"] = "8";
 	app.meta.h["company"] = "HaxeFlixel";
 	app.meta.h["file"] = "SideScroller";
 	app.meta.h["name"] = "SideScroller";
@@ -4430,6 +4430,7 @@ flixel_group_FlxTypedGroup.prototype = $extend(flixel_FlxBasic.prototype,{
 var HUD = function() {
 	flixel_group_FlxTypedGroup.call(this);
 	this._floatyBar = new flixel_ui_FlxBar(10,5,flixel_ui_FlxBarFillDirection.LEFT_TO_RIGHT,flixel_FlxG.width - 20,20,null,"_floatPower",0,100,true);
+	this._floatyBar.createFilledBar(null,-1,true,-16777216);
 	this._floatyBar.set_alpha(0);
 	this.add(this._floatyBar);
 	this.forEach(function(sprite) {
@@ -4448,13 +4449,13 @@ HUD.prototype = $extend(flixel_group_FlxTypedGroup.prototype,{
 	,update: function(elapsed) {
 		this._floatyBar.set_value(this._floatPower);
 		if(this._floatPower < 100) {
-			var fh = this._floatyBar;
-			fh.set_alpha(fh.alpha + 0.01);
-		} else {
-			while(this._floatyBar.alpha < 1) {
+			if(this._floatyBar.alpha < 1) {
 				var fh = this._floatyBar;
-				fh.set_alpha(fh.alpha - 0.01);
+				fh.set_alpha(fh.alpha + 0.1);
 			}
+		} else if(this._floatyBar.alpha > 0) {
+			var fh = this._floatyBar;
+			fh.set_alpha(fh.alpha - 0.1);
 		}
 		flixel_group_FlxTypedGroup.prototype.update.call(this,elapsed);
 	}
@@ -72706,7 +72707,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 12769;
+	this.version = 937827;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
