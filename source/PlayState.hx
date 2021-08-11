@@ -49,18 +49,13 @@ class PlayState extends FlxState
 		}
 	}
 
-	override public function update(elapsed:Float)
-	{
-		//_hud.updateBar(_player.floatyPower); 
+	override public function update(elapsed:Float){
 		collisions();
-
 		FlxG.camera.follow(_player, PLATFORMER, 1);
-
 		super.update(elapsed);
 	}
 
-	function collisions()
-	{
+	function collisions(){
 		FlxG.collide(_tilemap, _player);
 	}
 }

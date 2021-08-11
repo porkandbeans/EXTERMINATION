@@ -3,7 +3,6 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.util.FlxColor;
 
 class Player extends FlxSprite
 {
@@ -14,7 +13,6 @@ class Player extends FlxSprite
 	var _canJump:Bool;
 
 	var MAX_JUMPHOLD = 20;
-    //public var floatyPower:Float = 100;
 
     public function new(x:Float = 0, y:Float = 0)
     {
@@ -24,6 +22,9 @@ class Player extends FlxSprite
         acceleration.y = _weight;
         drag.x = maxVelocity.x * 5;
 
+		setSize(16, 30);
+		offset.set(8, 0);
+
 		_jumpHold = MAX_JUMPHOLD;
 
 
@@ -32,71 +33,35 @@ class Player extends FlxSprite
 		animation.add("run", [1, 2, 3, 4, 5, 6, 7, 8], 9, true);
 		animation.add("jump", [9, 10], 4, false);
 		animation.add("fall", [11, 12], 9, true);
-		// makeGraphic(16, 16, FlxColor.BLUE);
-    }
-
-    public function setWeight(x:Float){
-        _weight = x;
-        acceleration.y = _weight;
-    }
-
-    public function setGrounded(x:Bool){
-        _grounded = x;
     }
 
 	override public function update(elapsed:Float)
 	{
+		frameInit();
+		keyListeners();
+		animations();
+		super.update(elapsed);
+	}
+
+	function frameInit(){
 		if(isTouching(FlxObject.FLOOR)){
 			_jumpHold = MAX_JUMPHOLD;
 		}
 
 		acceleration.x = 0;
         acceleration.y = _weight;
-        
-		keyListeners();
-
-		if(velocity.y == 0){
-			if (velocity.x == 0)
-			{
-				animation.play("idle");
-			}
-			else if (velocity.x > 0)
-			{
-				animation.play("run");
-			}
-			else
-			{
-				animation.play("run");
-			}
-		}else{
-			if(velocity.y > -0.7){
-				animation.play("fall");
-			}else if(isTouching(FlxObject.FLOOR)){
-				animation.play("jump");
-			}
-		}
-
-		if(velocity.x > 0){
-			flipX = false;
-		}else if(velocity.x < 0){
-			flipX = true;
-		}
-
-		super.update(elapsed);
 	}
 
-	function keyListeners()
-	{
-		if (FlxG.keys.anyPressed([LEFT, A]))
-		{
+	function keyListeners(){
+		if (FlxG.keys.anyPressed([LEFT, A])){
 			acceleration.x = -maxVelocity.x * 7;
 		}
 
-		if (FlxG.keys.anyPressed([RIGHT, D]))
-		{
+		if (FlxG.keys.anyPressed([RIGHT, D])){
 			acceleration.x = maxVelocity.x * 7;
 		}
 		
+		// fixes being able to spam jump while in the air
 		if(FlxG.keys.anyJustReleased([SPACE, W, UP]) && !isTouching(FlxObject.FLOOR)){
 			_canJump = false;
 		}
@@ -112,4 +77,27 @@ class Player extends FlxSprite
 			}
 		}
     }
+
+	function animations(){
+		if(velocity.y == 0){
+			if (velocity.x == 0){
+				animation.play("idle");
+			}
+			else{
+				animation.play("run");
+			}
+		}else{
+			if(velocity.y > -0.7){
+				animation.play("fall");
+			}else if(isTouching(FlxObject.FLOOR)){
+				animation.play("jump");
+			}
+		}
+
+		if(velocity.x > 0){
+			flipX = false;
+		}else if(velocity.x < 0){
+			flipX = true;
+		}
+	}
 }
