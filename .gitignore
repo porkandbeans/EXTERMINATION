@@ -1,4 +1,13 @@
 .vscode/*
-export/
-export/html5/
+export/*
+export/html5/*
 krita_projects/
+export/html5/
+export/html5/bin/SideScroller.js
+export/html5/bin/manifest/default.json
+export/html5/haxe/ApplicationMain.hx
+export/html5/haxe/ManifestResources.hx
+export/html5/bin/SideScroller.js
+export/html5/bin/manifest/default.json
+export/html5/haxe/ApplicationMain.hx
+export/html5/haxe/ManifestResources.hx

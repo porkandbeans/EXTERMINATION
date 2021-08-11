@@ -19,7 +19,7 @@ class ApplicationMain
 
 		#if (js && html5)
 		#if (munit || utest)
-		lime.system.System.embed("SideScroller", null, 640, 480);
+		lime.system.System.embed("SideScroller", null, 1280, 480);
 		#end
 		#else
 		create(null);
@@ -32,7 +32,7 @@ class ApplicationMain
 
 		ManifestResources.init(config);
 
-		app.meta["build"] = "9";
+		app.meta["build"] = "10";
 		app.meta["company"] = "HaxeFlixel";
 		app.meta["file"] = "SideScroller";
 		app.meta["name"] = "SideScroller";
@@ -58,7 +58,7 @@ class ApplicationMain
 			parameters: {},
 			resizable: false,
 			title: "SideScroller",
-			width: 640,
+			width: 1280,
 			x: null,
 			y: null,
 		};

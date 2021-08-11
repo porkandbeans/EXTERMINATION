@@ -1,6 +1,7 @@
 package;
 
 //import flixel.FlxG;
+import flixel.addons.display.FlxBackdrop;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxState;
@@ -16,21 +17,21 @@ class PlayState extends FlxState
 	var _tilemap:FlxTilemap;
 	var _player:Player;
 	var _hud:HUD;
+	var _backdrop:FlxBackdrop;
 	
 	override public function create()
 	{
+		_backdrop = new FlxBackdrop("assets/images/Backgrounds/backdrop.png", 0.5, 0.5, true, 0, 0);
+		add(_backdrop);
+
 		_map = new FlxOgmo3Loader(
 			"assets/levels/hworld.ogmo", 
-			"assets/levels/level1.json");
+			"assets/levels/NewLevel0.json");
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");
 		_tilemap.follow();
 		_tilemap.setTileProperties(1, FlxObject.NONE);
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 		add(_tilemap);
-
-		/*	text = new FlxText(0,0,0, "doing chores", 32);
-			text.screenCenter();
-			add(text); */
 
 		_player = new Player();
 		_map.loadEntities(placeEntities, "entities");
@@ -50,7 +51,7 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		_hud.updateBar(_player.floatyPower); // gets the floating juice left in the player, sends it to the HUD
+		//_hud.updateBar(_player.floatyPower); 
 		collisions();
 
 		FlxG.camera.follow(_player, PLATFORMER, 1);
