@@ -1,6 +1,5 @@
 package;
 
-import flixel.system.debug.stats.StatsGraph;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
