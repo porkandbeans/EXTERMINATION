@@ -1,5 +1,7 @@
 package;
 
+import npcs.Pedestrian;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -14,6 +16,8 @@ class Player extends FlxSprite
 	var _canJump:Bool;
 	var _canAttack:Bool;
 	var _attacking:Bool;
+
+	var _pedestrians:FlxTypedGroup<Pedestrian>;
 
 	var MAX_JUMPHOLD = 20;
 
@@ -32,10 +36,10 @@ class Player extends FlxSprite
 		setSize(16, 32);
 		offset.set(8, 0);
 		animation.add("idle", [0]);
-		animation.add("run", [1, 2, 3, 4, 5, 6, 7, 8], 9, true);
-		animation.add("jump", [9, 10], 4, false);
-		animation.add("fall", [11, 12], 9, true);
-		animation.add("melee", [13, 14, 15], 12, false); 
+		animation.add("run", [1,2,3,4,5,6,7,8], 9, true);
+		animation.add("jump", [9,10], 4, false);
+		animation.add("fall", [11,12], 9, true);
+		animation.add("melee", [13,14,15], 12, false); 
     }
 
 	override public function update(elapsed:Float)
@@ -82,10 +86,7 @@ class Player extends FlxSprite
 			}
 
 			if(FlxG.keys.anyPressed([ENTER]) && _canAttack){
-				_attacking = true;
-				_canAttack = false;
-				animation.play("melee");
-				new FlxTimer().start(0.5, finishAttacking, 1);
+				stab();
 			}
 		}
     }
@@ -123,5 +124,22 @@ class Player extends FlxSprite
 
 	function finishAttacking(timer:FlxTimer):Void {
 		_canAttack = true;
+	}
+
+	function stab(){
+		_attacking = true;
+		_canAttack = false;
+		animation.play("melee");
+		new FlxTimer().start(0.5, finishAttacking, 1);
+
+		FlxG.overlap(this, _pedestrians, pedGetStabbed);
+	}
+
+	public function declarePeds(peds:FlxTypedGroup<Pedestrian>){
+		_pedestrians = peds;
+	}
+
+	function pedGetStabbed(me:Player, ped:Pedestrian){
+		ped.getStabbed();
 	}
 }
