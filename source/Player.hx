@@ -1,6 +1,6 @@
 package;
 
-import npcs.Pedestrian;
+import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -17,7 +17,7 @@ class Player extends FlxSprite
 	var _canAttack:Bool;
 	var _attacking:Bool;
 
-	var _pedestrians:FlxTypedGroup<Pedestrian>;
+	var _pedestrians:FlxTypedGroup<NPC>;
 
 	var MAX_JUMPHOLD = 20;
 
@@ -135,11 +135,11 @@ class Player extends FlxSprite
 		FlxG.overlap(this, _pedestrians, pedGetStabbed);
 	}
 
-	public function declarePeds(peds:FlxTypedGroup<Pedestrian>){
+	public function declarePeds(peds:FlxTypedGroup<NPC>){
 		_pedestrians = peds;
 	}
 
-	function pedGetStabbed(me:Player, ped:Pedestrian){
+	function pedGetStabbed(me:Player, ped:NPC){
 		ped.getStabbed();
 	}
 }

@@ -1,6 +1,6 @@
 package;
 
-import npcs.Pedestrian;
+import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxG;
@@ -16,7 +16,7 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
-	var _peds:FlxTypedGroup<Pedestrian>;
+	var _npcs:FlxTypedGroup<NPC>;
 	
 	override public function create()
 	{
@@ -31,11 +31,11 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(1, FlxObject.NONE);
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 		add(_tilemap);
-		_peds = new FlxTypedGroup<Pedestrian>();
-		add(_peds);
+		_npcs = new FlxTypedGroup<NPC>();
+		add(_npcs);
 		_player = new Player();
 		_map.loadEntities(placeEntities, "entities");
-		_player.declarePeds(_peds);
+		_player.declarePeds(_npcs);
 		add(_player);
 		
 		_hud = new HUD();
@@ -49,7 +49,7 @@ class PlayState extends FlxState
 			case "player":
 				_player.setPosition(entity.x, entity.y);
 			case "NPC":
-				_peds.add(new Pedestrian(entity.x - 16, entity.y -16));
+				_npcs.add(new NPC(entity.x - 16, entity.y -16));
 		}
 	}
 
@@ -61,6 +61,6 @@ class PlayState extends FlxState
 
 	function collisions(){
 		FlxG.collide(_tilemap, _player);
-		FlxG.collide(_peds, _tilemap);
+		FlxG.collide(_npcs, _tilemap);
 	}
 }
