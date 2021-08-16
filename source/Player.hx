@@ -1,5 +1,7 @@
 package;
 
+import guns.Bullet;
+import guns.Pistol;
 import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
@@ -16,20 +18,30 @@ class Player extends FlxSprite
 	var _canJump:Bool;
 	var _canAttack:Bool;
 	var _attacking:Bool;
-
 	var _pedestrians:FlxTypedGroup<NPC>;
+	
+	var _wep_names:Array<String>;
+	public var current_weapon:Int;
+	var _pistol:Pistol;
+	var _pBullets:FlxTypedGroup<Bullet>;
 
 	var MAX_JUMPHOLD = 20;
+	var	MAX_WEAPONS:Int;
 
     public function new(x:Float = 0, y:Float = 0)
     {
         super(x,y); // passes x and y to FlxSprite
 
+		// === WEAPON DECLARATION STUFF ===
+		_wep_names = ["none", "pistol"];
+		current_weapon = 0;
+		MAX_WEAPONS = _wep_names.length - 1;
+		_canAttack = true;
+
+		// === PHYSICS STUFF ===
         maxVelocity.set(160, 200);
         acceleration.y = _weight;
         drag.x = maxVelocity.x * 5;
-
-		_canAttack = true;
 		_jumpHold = MAX_JUMPHOLD;
 
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
@@ -41,6 +53,11 @@ class Player extends FlxSprite
 		animation.add("fall", [11,12], 9, true);
 		animation.add("melee", [13,14,15], 12, false); 
     }
+
+	public function declarePistolBullets(bulls:FlxTypedGroup<Bullet>){
+		_pBullets = bulls;
+		_pistol = new Pistol(_pBullets);
+	}
 
 	override public function update(elapsed:Float)
 	{
@@ -85,8 +102,22 @@ class Player extends FlxSprite
 				}
 			}
 
-			if(FlxG.keys.anyPressed([ENTER]) && _canAttack){
-				stab();
+			if(FlxG.keys.pressed.ENTER && _canAttack){
+				attack();
+			}
+
+			if(FlxG.keys.justPressed.RBRACKET){
+				current_weapon++;
+			}
+			
+			if (FlxG.keys.justPressed.LBRACKET){
+				current_weapon--;
+			}
+
+			if(current_weapon > MAX_WEAPONS){
+				current_weapon = 0;
+			}else if(current_weapon < 0){
+				current_weapon = MAX_WEAPONS;
 			}
 		}
     }
@@ -126,12 +157,20 @@ class Player extends FlxSprite
 		_canAttack = true;
 	}
 
+	function attack(){
+		switch(current_weapon){
+			case 0:
+				stab();
+			case 1:
+				_pistol.shoot(getMidpoint().x, getMidpoint().y, flipX);
+		}
+	}
+
 	function stab(){
 		_attacking = true;
 		_canAttack = false;
 		animation.play("melee");
 		new FlxTimer().start(0.5, finishAttacking, 1);
-
 		FlxG.overlap(this, _pedestrians, pedGetStabbed);
 	}
 

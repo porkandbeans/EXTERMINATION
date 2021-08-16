@@ -1,5 +1,6 @@
 package;
 
+import guns.Bullet;
 import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxBackdrop;
@@ -17,11 +18,14 @@ class PlayState extends FlxState
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
 	var _npcs:FlxTypedGroup<NPC>;
+	var _pistolBullets:FlxTypedGroup<Bullet>;
 	
 	override public function create()
 	{
 		_backdrop = new FlxBackdrop("assets/images/Backgrounds/backdrop.png", 0.5, 0.5, true, 0, 0);
 		add(_backdrop);
+
+		
 
 		_map = new FlxOgmo3Loader(
 			"assets/levels/hworld.ogmo", 
@@ -37,6 +41,10 @@ class PlayState extends FlxState
 		_map.loadEntities(placeEntities, "entities");
 		_player.declarePeds(_npcs);
 		add(_player);
+
+		_pistolBullets = new FlxTypedGroup<Bullet>(20);
+		_player.declarePistolBullets(_pistolBullets);
+		add(_pistolBullets);
 		
 		_hud = new HUD();
 		add(_hud);
@@ -56,6 +64,7 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float){
 		collisions();
 		FlxG.camera.follow(_player, PLATFORMER, 1);
+		_hud.updateGun(_player.current_weapon);
 		super.update(elapsed);
 	}
 
