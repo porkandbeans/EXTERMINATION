@@ -1,5 +1,7 @@
 package;
 
+import js.html.Int16Array;
+import guns.Rifle;
 import guns.Bullet;
 import guns.Pistol;
 import npcs.NPC;
@@ -11,6 +13,7 @@ import flixel.FlxSprite;
 
 class Player extends FlxSprite
 {
+	// === PRIVATE VARS ===
     var _jumpForce:Float = 80;
 	var _jumpHold:Int;
     var _weight:Float = 300;
@@ -20,20 +23,27 @@ class Player extends FlxSprite
 	var _attacking:Bool;
 	var _pedestrians:FlxTypedGroup<NPC>;
 	
+	// weapons
 	var _wep_names:Array<String>;
-	public var current_weapon:Int;
 	var _pistol:Pistol;
+	var _rifle:Rifle;
 	var _pBullets:FlxTypedGroup<Bullet>;
+	var _rBullets:FlxTypedGroup<Bullet>;
 
+	// === PUBLIC VARS ===
+	public var hud:HUD;
+	public var current_weapon:Int;
+
+	// === CONSTANTS ===
 	var MAX_JUMPHOLD = 20;
 	var	MAX_WEAPONS:Int;
 
     public function new(x:Float = 0, y:Float = 0)
     {
-        super(x,y); // passes x and y to FlxSprite
+        super(x,y);
 
 		// === WEAPON DECLARATION STUFF ===
-		_wep_names = ["none", "pistol"];
+		_wep_names = ["none", "pistol", "rifle"];
 		current_weapon = 0;
 		MAX_WEAPONS = _wep_names.length - 1;
 		_canAttack = true;
@@ -45,8 +55,10 @@ class Player extends FlxSprite
 		_jumpHold = MAX_JUMPHOLD;
 
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
-		setSize(16, 32);
+		setSize(16, 32); // makes the hitbox better
 		offset.set(8, 0);
+
+		// === ANIMATIONS ===
 		animation.add("idle", [0]);
 		animation.add("run", [1,2,3,4,5,6,7,8], 9, true);
 		animation.add("jump", [9,10], 4, false);
@@ -54,9 +66,11 @@ class Player extends FlxSprite
 		animation.add("melee", [13,14,15], 12, false); 
     }
 
-	public function declarePistolBullets(bulls:FlxTypedGroup<Bullet>){
-		_pBullets = bulls;
+	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
+		_pBullets = pBulls;
 		_pistol = new Pistol(_pBullets);
+		_rBullets = rBulls;
+		_rifle = new Rifle(_rBullets);
 	}
 
 	override public function update(elapsed:Float)
@@ -74,6 +88,20 @@ class Player extends FlxSprite
 
 		acceleration.x = 0;
         acceleration.y = _weight;
+	}
+
+	public function updateHUD(){
+		switch (current_weapon){
+			case 0:
+				hud.updateGun(current_weapon, 0);
+				return;
+			case 1:
+				hud.updateGun(current_weapon, _pistol.ammo);
+				return;
+			case 2:
+				hud.updateGun(current_weapon, _rifle.ammo);
+				return;
+		}
 	}
 
 	function keyListeners(){
@@ -104,23 +132,30 @@ class Player extends FlxSprite
 
 			if(FlxG.keys.pressed.ENTER && _canAttack){
 				attack();
+				updateHUD();
 			}
 
 			if(FlxG.keys.justPressed.RBRACKET){
 				current_weapon++;
+				cycleWeps();
+				updateHUD();
 			}
 			
 			if (FlxG.keys.justPressed.LBRACKET){
 				current_weapon--;
+				cycleWeps();
+				updateHUD();
 			}
+		}
+    }
 
-			if(current_weapon > MAX_WEAPONS){
+	function cycleWeps(){
+		if(current_weapon > MAX_WEAPONS){
 				current_weapon = 0;
 			}else if(current_weapon < 0){
 				current_weapon = MAX_WEAPONS;
 			}
-		}
-    }
+	}
 
 	function animations(){
 		if(!_attacking){
@@ -161,8 +196,15 @@ class Player extends FlxSprite
 		switch(current_weapon){
 			case 0:
 				stab();
+				return;
 			case 1:
 				_pistol.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				updateHUD();
+				return;
+			case 2:
+				_rifle.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				updateHUD();
+				return;
 		}
 	}
 

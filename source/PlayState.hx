@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxGroup;
 import guns.Bullet;
 import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -12,6 +13,7 @@ import flixel.tile.FlxTilemap;
 
 class PlayState extends FlxState
 {
+	// === PRIVATE VARS ===
 	var _map:FlxOgmo3Loader;
 	var _tilemap:FlxTilemap;
 	var _player:Player;
@@ -19,36 +21,55 @@ class PlayState extends FlxState
 	var _backdrop:FlxBackdrop;
 	var _npcs:FlxTypedGroup<NPC>;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
+	var _rifleBullets:FlxTypedGroup<Bullet>;
+	var _objects:FlxGroup;
 	
 	override public function create()
 	{
-		_backdrop = new FlxBackdrop("assets/images/Backgrounds/backdrop.png", 0.5, 0.5, true, 0, 0);
-		add(_backdrop);
+		// set the background image
+		_backdrop = new FlxBackdrop(
+			"assets/images/Backgrounds/backdrop.png", 
+			0.5, 0.5, true, 0, 0);
 
-		
-
+		// load the level data
 		_map = new FlxOgmo3Loader(
 			"assets/levels/hworld.ogmo", 
 			"assets/levels/NewLevel0.json");
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");
 		_tilemap.follow();
+
+		// declare which blocks are solid and collide with stuff
 		_tilemap.setTileProperties(1, FlxObject.NONE);
 		_tilemap.setTileProperties(2, FlxObject.ANY);
-		add(_tilemap);
+		
 		_npcs = new FlxTypedGroup<NPC>();
-		add(_npcs);
+		
 		_player = new Player();
 		_map.loadEntities(placeEntities, "entities");
 		_player.declarePeds(_npcs);
-		add(_player);
-
+		
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
-		_player.declarePistolBullets(_pistolBullets);
-		add(_pistolBullets);
+		_rifleBullets = new FlxTypedGroup<Bullet>(12);
+		_player.declareBullets(_pistolBullets, _rifleBullets);
 		
 		_hud = new HUD();
-		add(_hud);
+		_player.hud = _hud;
+		_player.updateHUD();
 
+		_objects = new FlxGroup();
+		_objects.add(_player);
+		_objects.add(_pistolBullets);
+		_objects.add(_rifleBullets);
+		_objects.add(_tilemap);
+		_objects.add(_npcs);
+
+		add(_backdrop);
+		add(_tilemap);
+		add(_npcs);
+		add(_player);
+		add(_pistolBullets);
+		add(_rifleBullets);
+		add(_hud);
 		super.create();
 	}
 
@@ -64,12 +85,34 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float){
 		collisions();
 		FlxG.camera.follow(_player, PLATFORMER, 1);
-		_hud.updateGun(_player.current_weapon);
 		super.update(elapsed);
 	}
 
 	function collisions(){
-		FlxG.collide(_tilemap, _player);
-		FlxG.collide(_npcs, _tilemap);
+		//FlxG.collide(_tilemap, _player);
+		FlxG.collide(_objects, _tilemap, objectCollide);
+		FlxG.overlap(_npcs, _pistolBullets, npcShot);
+		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot);
+	}
+
+	// callback when NPCs are shot
+	function npcShot(sprite1:NPC, sprite2:FlxObject){
+		if(sprite1.health > 0){
+			sprite2.kill();
+			sprite1.getStabbed();
+		}
+	}
+	
+	// unique callback for penetrating shots
+	function riflenpcShot(sprite1:NPC, sprite2:Bullet){
+		if(sprite1.health > 0){
+			sprite1.getStabbed();
+		}
+	}
+
+	function objectCollide(obj1:FlxObject, tmap:FlxTilemap){
+		if(obj1 is Bullet){
+			obj1.kill();
+		}
 	}
 }

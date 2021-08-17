@@ -11,8 +11,11 @@ import flixel.FlxSprite;
 class HUD extends FlxTypedGroup<FlxSprite>{
     //var _floatyBar:FlxBar;
     //var _floatPower:Float;
-    var _gun:FlxText;
+    var _pistolAmmo:Int;
     var _current_wep:Int;
+
+    var _ammoText:FlxText;
+    var _gun:FlxText;
 
     public function new(){
 		super();
@@ -20,11 +23,16 @@ class HUD extends FlxTypedGroup<FlxSprite>{
         _current_wep = 0;
         _gun = new FlxText(0,2,0, "0", 8);
         add(_gun);
+        
+        _ammoText = new FlxText(FlxG.width - 20, 0, 20, "0", 8);
+        add(_ammoText);
+        
         /*_floatyBar = new FlxBar(10, 5, LEFT_TO_RIGHT, (FlxG.width - 20), 20, null, "_floatPower", 0, 100, true);
         _floatyBar.createFilledBar(null, FlxColor.WHITE, true, FlxColor.BLACK);
 		_floatyBar.alpha = 0;
         add(_floatyBar);
         */
+
         forEach(function(sprite) { // ???????
             sprite.scrollFactor.set(0,0);
 		}); // ¯\_(ツ)_/¯ if it works, it works.*/
@@ -49,12 +57,26 @@ class HUD extends FlxTypedGroup<FlxSprite>{
             }
 		}*/
 
-        _gun.text = _current_wep + "";
-
         super.update(elapsed);
     }
 
-    public function updateGun(gun:Int){
+    public function updateGun(gun:Int, ammo:Int){
         _current_wep = gun;
+        switch(_current_wep){
+            case 0:
+                _gun.text = "Knife";
+                _ammoText.visible = false;
+                return;
+            case 1:
+                _gun.text = "Pistol";
+                _ammoText.visible = true;
+                _ammoText.text = Std.string(ammo);
+                return;
+            case 2:
+                _gun.text = "Rifle";
+                _ammoText.visible = true;
+                _ammoText.text = Std.string(ammo);
+                return;
+        }
     }
 }
