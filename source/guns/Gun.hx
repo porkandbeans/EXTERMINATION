@@ -4,7 +4,7 @@ import flixel.util.FlxTimer;
 
 class Gun{
     public var ammo:Int;
-    public var MAX_AMMO:Int;
+    var _MAX_AMMO:Int;
     var _canShoot:Bool;
     var _empty:Bool;
     var _timer:FlxTimer;
@@ -24,5 +24,9 @@ class Gun{
     public function addAmmo(i:Int){
         ammo += i;
         _empty = false;
+    }
+
+    public function getMaxAmmo():Int{
+        return _MAX_AMMO;
     }
 }

@@ -8,7 +8,7 @@ class Rifle extends Gun{
 
     public function new(bullets:FlxTypedGroup<Bullet>){
         super();
-        MAX_AMMO = 12;
+        _MAX_AMMO = 12;
         ammo = 6;
         _bullets = bullets;
         _canShoot = true;

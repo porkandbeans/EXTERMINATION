@@ -1,6 +1,5 @@
 package;
 
-import js.html.Int16Array;
 import guns.Rifle;
 import guns.Bullet;
 import guns.Pistol;
@@ -25,14 +24,15 @@ class Player extends FlxSprite
 	
 	// weapons
 	var _wep_names:Array<String>;
-	var _pistol:Pistol;
-	var _rifle:Rifle;
+	
 	var _pBullets:FlxTypedGroup<Bullet>;
 	var _rBullets:FlxTypedGroup<Bullet>;
 
 	// === PUBLIC VARS ===
 	public var hud:HUD;
 	public var current_weapon:Int;
+	public var pistol:Pistol;
+	public var rifle:Rifle;
 
 	// === CONSTANTS ===
 	var MAX_JUMPHOLD = 20;
@@ -68,9 +68,9 @@ class Player extends FlxSprite
 
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
 		_pBullets = pBulls;
-		_pistol = new Pistol(_pBullets);
+		pistol = new Pistol(_pBullets);
 		_rBullets = rBulls;
-		_rifle = new Rifle(_rBullets);
+		rifle = new Rifle(_rBullets);
 	}
 
 	override public function update(elapsed:Float)
@@ -96,10 +96,10 @@ class Player extends FlxSprite
 				hud.updateGun(current_weapon, 0);
 				return;
 			case 1:
-				hud.updateGun(current_weapon, _pistol.ammo);
+				hud.updateGun(current_weapon, pistol.ammo);
 				return;
 			case 2:
-				hud.updateGun(current_weapon, _rifle.ammo);
+				hud.updateGun(current_weapon, rifle.ammo);
 				return;
 		}
 	}
@@ -198,11 +198,11 @@ class Player extends FlxSprite
 				stab();
 				return;
 			case 1:
-				_pistol.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				pistol.shoot(getMidpoint().x, getMidpoint().y, flipX);
 				updateHUD();
 				return;
 			case 2:
-				_rifle.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				rifle.shoot(getMidpoint().x, getMidpoint().y, flipX);
 				updateHUD();
 				return;
 		}
@@ -222,5 +222,19 @@ class Player extends FlxSprite
 
 	function pedGetStabbed(me:Player, ped:NPC){
 		ped.getStabbed();
+	}
+
+	public function pistolRestock(qty:Int){
+		pistol.ammo += qty;
+		if(pistol.ammo > pistol.getMaxAmmo()){
+			pistol.ammo = pistol.getMaxAmmo();
+		}
+	}
+
+	public function rifleRestock(qty:Int){
+		rifle.ammo += qty;
+		if(rifle.ammo > rifle.getMaxAmmo()){
+			rifle.ammo = rifle.getMaxAmmo();
+		}
 	}
 }

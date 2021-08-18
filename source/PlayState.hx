@@ -1,5 +1,8 @@
 package;
 
+import pickups.ammo.RifleAmmo;
+import pickups.Pickup;
+import pickups.ammo.PistolAmmo;
 import flixel.group.FlxGroup;
 import guns.Bullet;
 import npcs.NPC;
@@ -22,7 +25,14 @@ class PlayState extends FlxState
 	var _npcs:FlxTypedGroup<NPC>;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
+	
+	// pickups
+	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
+	var _rifleAmmo:FlxTypedGroup<RifleAmmo>;
+
+	// helper groups
 	var _objects:FlxGroup;
+	var _pickups:FlxGroup;
 	
 	override public function create()
 	{
@@ -45,12 +55,15 @@ class PlayState extends FlxState
 		_npcs = new FlxTypedGroup<NPC>();
 		
 		_player = new Player();
-		_map.loadEntities(placeEntities, "entities");
+		
 		_player.declarePeds(_npcs);
 		
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
 		_player.declareBullets(_pistolBullets, _rifleBullets);
+		
+		_pistolAmmo = new FlxTypedGroup<PistolAmmo>();
+		_rifleAmmo = new FlxTypedGroup<RifleAmmo>();
 		
 		_hud = new HUD();
 		_player.hud = _hud;
@@ -63,6 +76,11 @@ class PlayState extends FlxState
 		_objects.add(_tilemap);
 		_objects.add(_npcs);
 
+		_pickups = new FlxGroup();
+		_pickups.add(_pistolAmmo);
+		_pickups.add(_rifleAmmo);
+
+		_map.loadEntities(placeEntities, "entities");
 		add(_backdrop);
 		add(_tilemap);
 		add(_npcs);
@@ -70,6 +88,8 @@ class PlayState extends FlxState
 		add(_pistolBullets);
 		add(_rifleBullets);
 		add(_hud);
+		add(_pistolAmmo);
+		add(_rifleAmmo);
 		super.create();
 	}
 
@@ -79,6 +99,10 @@ class PlayState extends FlxState
 				_player.setPosition(entity.x, entity.y);
 			case "NPC":
 				_npcs.add(new NPC(entity.x - 16, entity.y -16));
+			case "pistolammo":
+				_pistolAmmo.add(new PistolAmmo(entity.x + 4, entity.y + 4));
+			case "rifleammo":
+				_rifleAmmo.add(new RifleAmmo(entity.x + 4, entity.y + 4));
 		}
 	}
 
@@ -93,6 +117,7 @@ class PlayState extends FlxState
 		FlxG.collide(_objects, _tilemap, objectCollide);
 		FlxG.overlap(_npcs, _pistolBullets, npcShot);
 		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot);
+		FlxG.overlap(_player, _pickups, pickupItem);
 	}
 
 	// callback when NPCs are shot
@@ -114,5 +139,10 @@ class PlayState extends FlxState
 		if(obj1 is Bullet){
 			obj1.kill();
 		}
+	}
+
+	function pickupItem(player:Player, item:Pickup){
+		item.get(player);
+		player.updateHUD();
 	}
 }
