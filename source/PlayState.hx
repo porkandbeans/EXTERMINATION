@@ -100,9 +100,9 @@ class PlayState extends FlxState
 			case "NPC":
 				_npcs.add(new NPC(entity.x - 16, entity.y -16));
 			case "pistolammo":
-				_pistolAmmo.add(new PistolAmmo(entity.x + 4, entity.y + 4));
+				_pistolAmmo.add(new PistolAmmo(entity.x, entity.y - 4));
 			case "rifleammo":
-				_rifleAmmo.add(new RifleAmmo(entity.x + 4, entity.y + 4));
+				_rifleAmmo.add(new RifleAmmo(entity.x, entity.y - 4));
 		}
 	}
 

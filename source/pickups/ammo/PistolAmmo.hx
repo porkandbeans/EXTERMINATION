@@ -5,7 +5,8 @@ import flixel.util.FlxColor;
 class PistolAmmo extends Pickup{
     override public function new(x:Float = 0,y:Float = 0){
         super(x,y);
-        makeGraphic(8, 8, FlxColor.YELLOW);
+        loadGraphic("assets/images/pickups/pistolammo.png", false, 16, 16);
+        //makeGraphic(8, 8, FlxColor.YELLOW);
     }
 
     override public function get(player:Player){
