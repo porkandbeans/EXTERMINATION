@@ -30,7 +30,9 @@
         {"name": "pistolammo", "id": 25, "_eid": "24824871", "x": 1216, "y": 224, "originX": 0, "originY": 0},
         {"name": "rifleammo", "id": 26, "_eid": "24983899", "x": 480, "y": 160, "originX": 0, "originY": 0},
         {"name": "rifleammo", "id": 27, "_eid": "24983899", "x": 720, "y": 208, "originX": 0, "originY": 0},
-        {"name": "rifleammo", "id": 28, "_eid": "24983899", "x": 1040, "y": 272, "originX": 0, "originY": 0}
+        {"name": "rifleammo", "id": 28, "_eid": "24983899", "x": 1040, "y": 272, "originX": 0, "originY": 0},
+        {"name": "rifle", "id": 29, "_eid": "35527679", "x": 464, "y": 208, "originX": 0, "originY": 0},
+        {"name": "pistol", "id": 30, "_eid": "35844536", "x": 304, "y": 208, "originX": 0, "originY": 0}
       ]
     },
     {

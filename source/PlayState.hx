@@ -1,5 +1,7 @@
 package;
 
+import pickups.guns.PistolPickup;
+import pickups.guns.RiflePickup;
 import pickups.ammo.RifleAmmo;
 import pickups.Pickup;
 import pickups.ammo.PistolAmmo;
@@ -29,6 +31,8 @@ class PlayState extends FlxState
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
 	var _rifleAmmo:FlxTypedGroup<RifleAmmo>;
+	var _rifles:FlxTypedGroup<RiflePickup>;
+	var _pistols:FlxTypedGroup<PistolPickup>;
 
 	// helper groups
 	var _objects:FlxGroup;
@@ -58,27 +62,33 @@ class PlayState extends FlxState
 		
 		_player.declarePeds(_npcs);
 		
+		// === PICKUP DECLARATIONS ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
-		_player.declareBullets(_pistolBullets, _rifleBullets);
-		
+		_player.declareBullets(_pistolBullets, _rifleBullets); // the player needs these for his weapon classes
 		_pistolAmmo = new FlxTypedGroup<PistolAmmo>();
 		_rifleAmmo = new FlxTypedGroup<RifleAmmo>();
+		_rifles = new FlxTypedGroup<RiflePickup>();
+		_pistols = new FlxTypedGroup<PistolPickup>();
 		
 		_hud = new HUD();
 		_player.hud = _hud;
 		_player.updateHUD();
-
+		
+		// === OBJECTS GROUP
 		_objects = new FlxGroup();
 		_objects.add(_player);
 		_objects.add(_pistolBullets);
 		_objects.add(_rifleBullets);
 		_objects.add(_tilemap);
 		_objects.add(_npcs);
-
+		
+		// === PICKUPS GROUP ===
 		_pickups = new FlxGroup();
 		_pickups.add(_pistolAmmo);
 		_pickups.add(_rifleAmmo);
+		_pickups.add(_rifles);
+		_pickups.add(_pistols);
 
 		_map.loadEntities(placeEntities, "entities");
 		add(_backdrop);
@@ -90,6 +100,13 @@ class PlayState extends FlxState
 		add(_hud);
 		add(_pistolAmmo);
 		add(_rifleAmmo);
+		add(_rifles);
+		add(_pistols);
+
+		// === DEBUGGING STUFF ===
+		FlxG.watch.add(_player, "current_weapon");
+		FlxG.watch.add(_player, "_heldWeapons");
+
 		super.create();
 	}
 
@@ -103,6 +120,10 @@ class PlayState extends FlxState
 				_pistolAmmo.add(new PistolAmmo(entity.x, entity.y - 4));
 			case "rifleammo":
 				_rifleAmmo.add(new RifleAmmo(entity.x, entity.y - 4));
+			case "rifle":
+				_rifles.add(new RiflePickup(entity.x, entity.y));
+			case "pistol":
+				_pistols.add(new PistolPickup(entity.x, entity.y));
 		}
 	}
 

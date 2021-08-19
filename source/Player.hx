@@ -21,6 +21,7 @@ class Player extends FlxSprite
 	var _canAttack:Bool;
 	var _attacking:Bool;
 	var _pedestrians:FlxTypedGroup<NPC>;
+	var _heldWeapons:Array<Int>;
 	
 	// weapons
 	var _wep_names:Array<String>;
@@ -33,6 +34,8 @@ class Player extends FlxSprite
 	public var current_weapon:Int;
 	public var pistol:Pistol;
 	public var rifle:Rifle;
+	public var hasRifle:Bool;
+	public var hasPistol:Bool;
 
 	// === CONSTANTS ===
 	var MAX_JUMPHOLD = 20;
@@ -47,6 +50,8 @@ class Player extends FlxSprite
 		current_weapon = 0;
 		MAX_WEAPONS = _wep_names.length - 1;
 		_canAttack = true;
+		_heldWeapons = [0]; // append to this with ints so it becomes [0, 1] and [0, 1, 2]
+		hasRifle = false;
 
 		// === PHYSICS STUFF ===
         maxVelocity.set(160, 200);
@@ -91,15 +96,15 @@ class Player extends FlxSprite
 	}
 
 	public function updateHUD(){
-		switch (current_weapon){
+		switch (_heldWeapons[current_weapon]){
 			case 0:
-				hud.updateGun(current_weapon, 0);
+				hud.updateGun(_heldWeapons[current_weapon], 0);
 				return;
 			case 1:
-				hud.updateGun(current_weapon, pistol.ammo);
+				hud.updateGun(_heldWeapons[current_weapon], pistol.ammo);
 				return;
 			case 2:
-				hud.updateGun(current_weapon, rifle.ammo);
+				hud.updateGun(_heldWeapons[current_weapon], rifle.ammo);
 				return;
 		}
 	}
@@ -150,11 +155,11 @@ class Player extends FlxSprite
     }
 
 	function cycleWeps(){
-		if(current_weapon > MAX_WEAPONS){
-				current_weapon = 0;
-			}else if(current_weapon < 0){
-				current_weapon = MAX_WEAPONS;
-			}
+		if(current_weapon > _heldWeapons.length - 1){
+			current_weapon = 0;
+		}else if(current_weapon < 0){
+			current_weapon = _heldWeapons.length - 1;
+		}
 	}
 
 	function animations(){
@@ -193,7 +198,7 @@ class Player extends FlxSprite
 	}
 
 	function attack(){
-		switch(current_weapon){
+		switch(_heldWeapons[current_weapon]){
 			case 0:
 				stab();
 				return;
@@ -236,5 +241,15 @@ class Player extends FlxSprite
 		if(rifle.ammo > rifle.getMaxAmmo()){
 			rifle.ammo = rifle.getMaxAmmo();
 		}
+	}
+
+	public function pickupRifle(){
+		_heldWeapons = _heldWeapons.concat([2]);
+		hasRifle = true;
+	}
+
+	public function pickupPistol(){
+		_heldWeapons = _heldWeapons.concat([1]);
+		hasPistol = true;
 	}
 }

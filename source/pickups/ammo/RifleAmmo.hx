@@ -11,6 +11,7 @@ class RifleAmmo extends Pickup{
 
     override public function get(player:Player){
         super.get(player);
+
         if(player.rifle.ammo >= player.rifle.getMaxAmmo()){
             return;
         }
