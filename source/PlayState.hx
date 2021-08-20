@@ -108,6 +108,12 @@ class PlayState extends FlxState
 		FlxG.watch.add(_player, "_heldWeapons");
 
 		super.create();
+
+		// === TEMPORARY ===
+		// === TEMPORARY ===
+		// === TEMPORARY ===
+		// Todo: make volume slider in options menu
+		FlxG.sound.volume = 0.2;
 	}
 
 	function placeEntities(entity:EntityData){

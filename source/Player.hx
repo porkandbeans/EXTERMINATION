@@ -69,6 +69,8 @@ class Player extends FlxSprite
 		animation.add("jump", [9,10], 4, false);
 		animation.add("fall", [11,12], 9, true);
 		animation.add("melee", [13,14,15], 12, false); 
+		animation.add("idlePistol", [16]);
+		animation.add("runPistol", [17, 18, 19, 20, 21, 22, 23, 24], 9, true);
     }
 
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
@@ -165,11 +167,12 @@ class Player extends FlxSprite
 	function animations(){
 		if(!_attacking){
 			if(velocity.y == 0){
-				if (velocity.x == 0){ 
-					animation.play("idle");
+				if (velocity.x == 0){
+					idle(); 
+					//animation.play("idle");
 				}
 				else{
-					animation.play("run");
+					run();
 				}
 			}else{
 				if(velocity.y > -0.7){
@@ -190,6 +193,32 @@ class Player extends FlxSprite
 
 		if(animation.curAnim == animation.getByName("melee") && animation.finished){
 			_attacking = false;
+		}
+	}
+
+	// === ANIMATION FUNCTIONS ===
+	function idle(){
+		switch(_heldWeapons[current_weapon]){
+			case 0:
+				animation.play("idle");
+				return;
+			case 1:
+				animation.play("idlePistol");
+				return;
+			case 2:
+				animation.play("idle");
+				return;
+		}
+	}
+
+	function run(){
+		switch(_heldWeapons[current_weapon]){
+			case 0:
+				animation.play("run");
+				return;
+			case 1:
+				animation.play("runPistol");
+				return;
 		}
 	}
 
