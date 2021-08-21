@@ -10,7 +10,7 @@ class PistolPickup extends PistolAmmo{
     }
 
     override public function get(player:Player){
-        if(!player.hasRifle){
+        if(!player.hasPistol){
             player.pickupPistol();
         }
         super.get(player);

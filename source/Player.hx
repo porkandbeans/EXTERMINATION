@@ -169,7 +169,6 @@ class Player extends FlxSprite
 			if(velocity.y == 0){
 				if (velocity.x == 0){
 					idle(); 
-					//animation.play("idle");
 				}
 				else{
 					run();
@@ -218,6 +217,9 @@ class Player extends FlxSprite
 				return;
 			case 1:
 				animation.play("runPistol");
+				return;
+			case 2:
+				animation.play("run");
 				return;
 		}
 	}
@@ -282,3 +284,9 @@ class Player extends FlxSprite
 		hasPistol = true;
 	}
 }
+
+/* BUGS
+
+- picking up the rifle before picking up the pistol prevents you from being able to use the pistol
+
+*/
