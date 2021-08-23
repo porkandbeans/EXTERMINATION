@@ -25,7 +25,6 @@ class Player extends FlxSprite
 	
 	// weapons
 	var _wep_names:Array<String>;
-	
 	var _pBullets:FlxTypedGroup<Bullet>;
 	var _rBullets:FlxTypedGroup<Bullet>;
 
@@ -48,7 +47,7 @@ class Player extends FlxSprite
 		// === WEAPON DECLARATION STUFF ===
 		_wep_names = ["none", "pistol", "rifle"];
 		current_weapon = 0;
-		MAX_WEAPONS = _wep_names.length - 1;
+		MAX_WEAPONS = _wep_names.length - 1; // what even are constants? GoKritz clearly does not know...
 		_canAttack = true;
 		_heldWeapons = [0]; // append to this with ints so it becomes [0, 1] and [0, 1, 2]
 		hasRifle = false;
@@ -63,7 +62,7 @@ class Player extends FlxSprite
 		setSize(16, 32); // makes the hitbox better
 		offset.set(8, 0);
 
-		// === ANIMATIONS ===
+		// === ANI4MATIONS ===
 		animation.add("idle", [0]);
 		animation.add("run", [1,2,3,4,5,6,7,8], 9, true);
 		animation.add("jump", [9,10], 4, false);
