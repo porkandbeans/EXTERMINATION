@@ -2,26 +2,25 @@ package;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.system.FlxSound;
-import flixel.ui.FlxButton;
+import flixel.addons.ui.FlxUIButton;
 
 class MenuState extends FlxState
 {
-	var _mainMenu:FlxGroup;
-	var _startButton:FlxButton;
-	var _newgameButton:FlxButton;
-	var _optionsButton:FlxButton;
-	var _continueButton:FlxButton;
-	var _levelsButton:FlxButton;
+	var _mainMenu:FlxTypedGroup<FlxUIButton>;
+	var _startButton:FlxUIButton;
+	var _newgameButton:FlxUIButton;
+	var _optionsButton:FlxUIButton;
+	var _continueButton:FlxUIButton;
+	var _levelsButton:FlxUIButton;
 
 	var _optionsMenu:FlxGroup;
-	var _optionsCloseButton:FlxButton;
-	var _volumeText:FlxButton;
-	var _volUpButton:FlxButton;
-	var _volDownButton:FlxButton;
+	var _optionsCloseButton:FlxUIButton;
+	var _volumeText:FlxUIButton;
+	var _volUpButton:FlxUIButton;
+	var _volDownButton:FlxUIButton;
 
 	var _menuMusic:FlxSound;
 
@@ -34,33 +33,34 @@ class MenuState extends FlxState
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
 
-		_buttonWidth = _screenWidth - 100;
+		_buttonWidth = _screenWidth - 200;
 
 		FlxG.autoPause = true;
-		_startButton = new FlxButton(0, 0, "begin", clickPlay);
+		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
 		_startButton.screenCenter();
 		add(_startButton);
 
-		_newgameButton = new FlxButton(_buttonWidth, 0, "New Game", newGame);
+		_newgameButton = new FlxUIButton(_buttonWidth, 0, "New Game", newGame);
 		add(_newgameButton);
-		_continueButton = new FlxButton(_buttonWidth, 30, "Continue", continueGame);
+		_continueButton = new FlxUIButton(_buttonWidth, 60, "Continue", continueGame);
 		add(_continueButton);
-		_levelsButton = new FlxButton(_buttonWidth, 60, "Level Select", levelsMenu);
+		_levelsButton = new FlxUIButton(_buttonWidth, 120, "Level Select", levelsMenu);
 		add(_levelsButton);
-		_optionsButton = new FlxButton(_buttonWidth, 90, "Options", optionsMenu);
+		_optionsButton = new FlxUIButton(_buttonWidth, 180, "Options", optionsMenu);
 		add(_optionsButton);
 
-		_mainMenu = new FlxGroup();
+		_mainMenu = new FlxTypedGroup<FlxUIButton>();
 		_mainMenu.add(_newgameButton);
 		_mainMenu.add(_continueButton);
 		_mainMenu.add(_levelsButton);
 		_mainMenu.add(_optionsButton);
+		_mainMenu.forEach(loadButtonGraphic);
 
-		_optionsCloseButton = new FlxButton(0, FlxG.height / 2, "Back", closeOptions);
+		_optionsCloseButton = new FlxUIButton(0, FlxG.height / 2, "Back", closeOptions);
 		add(_optionsCloseButton);
-		_volUpButton = new FlxButton(_buttonWidth, 90, '+', volumeUp);
+		_volUpButton = new FlxUIButton(_buttonWidth, 90, '+', volumeUp);
 		add(_volUpButton);
-		_volDownButton = new FlxButton(_buttonWidth - 80, 90, '-', volumeDown);
+		_volDownButton = new FlxUIButton(_buttonWidth - 80, 90, '-', volumeDown);
 		add(_volDownButton);
 
 		_optionsMenu = new FlxGroup();
@@ -84,29 +84,35 @@ class MenuState extends FlxState
 		super.create();
 	}
 
+	// called in a loop
 	function hideButton(button:FlxBasic){
 		button.visible = false;
 	}
 
+	// called in a loop
 	function showButton(button:FlxBasic){
 		button.visible = true;
 	}
 
+	// displays the main menu
 	function clickPlay(){
 		_startButton.visible = false;
 		_mainMenu.forEach(showButton);
 	}
 
+	// switches to PlayState.hx
 	function newGame(){
 		FlxG.sound.music.pause();
 		FlxG.switchState(new PlayState());
 	}
 
+	// hides main menu and displays the options menu
 	function optionsMenu(){
 		_mainMenu.forEach(hideButton);
 		_optionsMenu.forEach(showButton);
 	}
 
+	// hides options menu and displays the main menu
 	function closeOptions(){
 		_optionsMenu.forEach(hideButton);
 		_mainMenu.forEach(showButton);
@@ -126,5 +132,26 @@ class MenuState extends FlxState
 
 	function volumeDown(){
 
+	}
+
+	// assigns the graphic to use for the menu buttons
+	function loadButtonGraphic(button:FlxUIButton){
+		button.loadGraphic("assets/images/ui/bloodbutton.png");
+		/*button.setSize(110, 58);
+		button.setLabel(new FlxUIText(
+			50, 10, 100, button.label.text
+		));*/
+
+		button.label.offset.set(25, -25);
+		//button.label.setBorderStyle(OUTLINE,FlxColor.TRANSPARENT,40);
+		
+		//button.getLabel().y += 10;
+		
+		/*button.setLabel(new FlxUIText(
+			50, 
+			50,
+			button.getLabel().width,
+			button.getLabel().text)
+		);*/
 	}
 }
