@@ -1,4 +1,4 @@
-# Untitled Side-Scrolling-Platformer-Shooter-Postal-Style Thingy
+# EXTERMINATION
 
 https://www.newgrounds.com/projects/games/1728642/preview/filetype/2
 
