@@ -110,12 +110,6 @@ class PlayState extends FlxState
 		FlxG.watch.add(_player, "_heldWeapons");
 
 		super.create();
-
-		// === TEMPORARY ===
-		// === TEMPORARY ===
-		// === TEMPORARY ===
-		// Todo: make volume slider in options menu
-		FlxG.sound.volume = 0.2;
 	}
 
 	function placeEntities(entity:EntityData)
@@ -147,8 +141,7 @@ class PlayState extends FlxState
 	function collisions()
 	{
 		// FlxG.collide(_tilemap, _player);
-		// FlxG.collide(_objects, _tilemap, objectCollide);
-
+		
 		/*
 			having issues with the 'is' operator here, works on my desktop
 			but not on my laptop...
@@ -156,6 +149,7 @@ class PlayState extends FlxState
 			giving them a more specific collide until I figure that shit out
 		 */
 
+		FlxG.collide(_objects, _tilemap);
 		FlxG.collide(_bullets, _tilemap, bulletWall);
 		FlxG.overlap(_npcs, _pistolBullets, npcShot);
 		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot);
@@ -183,6 +177,7 @@ class PlayState extends FlxState
 
 	function bulletWall(obj1:FlxObject, tmap:FlxTilemap)
 	{
+		// specifically kills bullets on impact with world boundaries
 		obj1.kill();
 	}
 

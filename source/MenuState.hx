@@ -1,5 +1,16 @@
+/*
+	When the game loads, in order to prevent the menu music bleeding over into the game I make
+	the player click a "begin" button before the menu is displayed. This forces an interaction, allowing
+	JavaScript to play sounds.
+
+	the menus themselves are all here in one FlxState. They are simply a bunch of different buttons
+	grouped together into FlxGroups, which I then hide/display as needed.
+*/
+
 package;
 
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -21,9 +32,14 @@ class MenuState extends FlxState
 
 	var _optionsMenu:FlxGroup;
 	var _optionsCloseButton:FlxUIButton;
-	var _volumeText:FlxUIButton;
-	var _volUpButton:FlxUIButton;
-	var _volDownButton:FlxUIButton;
+	var _musVolumeText:FlxText; // music volume label
+	var _musVolumeDisp:FlxText; // music volume percentage
+	var _gVolumeText:FlxText; // label
+	var _gVolumeDisp:FlxText; // %
+	var _volUpButton:FlxUIButton; // music +
+	var _volDownButton:FlxUIButton; // music -
+	var _gameVolUp:FlxUIButton; // master +
+	var _gameVolDown:FlxUIButton; // master -
 	var _fullscreenButton:FlxUIButton;
 
 	var _menuMusic:FlxSound;
@@ -39,22 +55,28 @@ class MenuState extends FlxState
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
 
-		_buttonWidth = _screenWidth - 200;
+		_buttonWidth = _screenWidth - 120;
 
-		FlxG.autoPause = true;
+		//FlxG.autoPause = true;  I think this breaks the music?
+
 		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
 		_startButton.screenCenter();
 		add(_startButton);
 
+		// === MAIN MENU CONSTRUCTORS ===
 		_newgameButton = new FlxUIButton(_buttonWidth, 0, "New Game", newGame);
 		add(_newgameButton);
+
 		_continueButton = new FlxUIButton(_buttonWidth, 60, "Continue", continueGame);
 		add(_continueButton);
+
 		_levelsButton = new FlxUIButton(_buttonWidth, 120, "Level Select", levelsMenu);
 		add(_levelsButton);
+
 		_optionsButton = new FlxUIButton(_buttonWidth, 180, "Options", optionsMenu);
 		add(_optionsButton);
 
+		// === MAIN MENU GROUP ===
 		_mainMenu = new FlxTypedGroup<FlxUIButton>();
 		_mainMenu.add(_newgameButton);
 		_mainMenu.add(_continueButton);
@@ -62,20 +84,58 @@ class MenuState extends FlxState
 		_mainMenu.add(_optionsButton);
 		_mainMenu.forEach(loadButtonGraphic);
 
+		// === OPTIONS CONSTRUCTORS ===
 		_optionsCloseButton = new FlxUIButton(0, FlxG.height / 2, "Back", closeOptions);
 		add(_optionsCloseButton);
+
 		_volUpButton = new FlxUIButton(_buttonWidth, 90, '+', volumeUp);
 		add(_volUpButton);
-		_volDownButton = new FlxUIButton(_buttonWidth - 80, 90, '-', volumeDown);
+
+		_volDownButton = new FlxUIButton(_buttonWidth - 32, 90, '-', volumeDown);
 		add(_volDownButton);
+
 		_fullscreenButton = new FlxUIButton(_buttonWidth, 180, "Fullscreen", fullscreenToggle);
 		add(_fullscreenButton);
 
+		_gameVolUp = new FlxUIButton(_buttonWidth, 122, '+', gameVolUp);
+		add(_gameVolUp);
+
+		_gameVolDown = new FlxUIButton(_buttonWidth - 32, 122, '-', gameVolDown);
+		add(_gameVolDown);
+
+		_musVolumeText = new FlxText(_volUpButton.x - 200, _volUpButton.y + 8, 128, "Music volume", 12);
+		add(_musVolumeText);
+
+		_musVolumeDisp = new FlxText(_musVolumeText.x + 128, _musVolumeText.y, 64, "oops!", 12);
+		add(_musVolumeDisp);
+
+		_gVolumeText = new FlxText(_gameVolUp.x - 200, _gameVolUp.y + 8, 128, "Master volume", 12);
+		add(_gVolumeText);
+
+		_gVolumeDisp = new FlxText(_gVolumeText.x + 128, _gVolumeText.y, 64, "oops!", 12);
+		add(_gVolumeDisp);
+
+		// === OPTIONS MENU GROUP ===
 		_optionsMenu = new FlxGroup();
 		_optionsMenu.add(_optionsCloseButton);
 		_optionsMenu.add(_volUpButton);
 		_optionsMenu.add(_volDownButton);
+		_optionsMenu.add(_gameVolDown);
+		_optionsMenu.add(_gameVolUp);
 		_optionsMenu.add(_fullscreenButton);
+		_optionsMenu.add(_musVolumeText);
+		_optionsMenu.add(_gVolumeText);
+		_optionsMenu.add(_musVolumeDisp);
+		_optionsMenu.add(_gVolumeDisp);
+
+		// these are grouped because they need a unique graphic
+		// also butts is a funny name
+		var _pmButts = new FlxTypedGroup<FlxUIButton>();
+		_pmButts.add(_volUpButton);
+		_pmButts.add(_volDownButton);
+		_pmButts.add(_gameVolUp);
+		_pmButts.add(_gameVolDown);
+		_pmButts.forEach(loadSmallGraphics);
 
 		_mainMenu.forEach(hideButton);
 		_optionsMenu.forEach(hideButton);
@@ -93,7 +153,16 @@ class MenuState extends FlxState
 		save = new FlxSave();
 		save.bind("exterminationVolumes");
 
-		FlxG.sound.music.volume = save.data.musicVolume;
+		// LOAD STUFF FROM SAVED DATA
+		if(save.data.musicVolume != null){
+			FlxG.sound.music.volume = save.data.musicVolume;
+		}
+
+		if(save.data.gameVolume != null){
+			FlxG.sound.volume = save.data.gameVolume;
+		}
+		
+		updateVolumeMus(); updateVolGame();
 
 		super.create();
 	}
@@ -153,38 +222,55 @@ class MenuState extends FlxState
 	{
 		FlxG.sound.music.volume += 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
+		updateVolumeMus();
 	}
 
 	function volumeDown()
 	{
 		FlxG.sound.music.volume -= 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
+		updateVolumeMus();
 	}
 
-	// assigns the graphic to use for the menu buttons
+	// assigns the graphic to use for the main menu buttons
 	function loadButtonGraphic(button:FlxUIButton)
 	{
 		button.loadGraphic("assets/images/ui/bloodbutton.png");
-		/*button.setSize(110, 58);
-			button.setLabel(new FlxUIText(
-				50, 10, 100, button.label.text
-			)); */
-
 		button.label.offset.set(25, -25);
-		// button.label.setBorderStyle(OUTLINE,FlxColor.TRANSPARENT,40);
+		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
+	}
 
-		// button.getLabel().y += 10;
-
-		/*button.setLabel(new FlxUIText(
-				50, 
-				50,
-				button.getLabel().width,
-				button.getLabel().text)
-			); */
+	// loads the graphics for the + and - buttons in the options menu
+	function loadSmallGraphics(button:FlxUIButton){
+		button.loadGraphic("assets/images/ui/buttonSmall.png");
+		button.label.offset.set(0, -6);
+		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
 	}
 
 	function fullscreenToggle()
 	{
 		FlxG.fullscreen = !FlxG.fullscreen;
+	}
+
+	function gameVolUp(){
+		FlxG.sound.volume += 0.1;
+		save.data.gameVolume = FlxG.sound.volume;
+		updateVolGame();
+	}
+
+	function gameVolDown(){
+		FlxG.sound.volume -= 0.1;
+		save.data.gameVolume = FlxG.sound.volume;
+		updateVolGame();
+	}
+
+
+	// these two functions grab the value of FlxG.sound's music and global volumes, then round their floating points away and multiply their values by 100 so you get 10%, 20%, etc
+	function updateVolumeMus(){
+		_musVolumeDisp.text = Math.round(FlxG.sound.music.volume * 100) + '%';
+	}
+
+	function updateVolGame(){
+		_gVolumeDisp.text = Math.round(FlxG.sound.volume * 100) + '%';
 	}
 }

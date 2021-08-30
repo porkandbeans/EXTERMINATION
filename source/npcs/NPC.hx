@@ -46,7 +46,9 @@ class NPC extends FlxSprite {
         drag.x = maxVelocity.x * 5;
         
         _painSound01 = FlxG.sound.load("assets/sounds/Flapstick_pain_grunts/FS_pain_01.wav");
+        _painSound01.volume = FlxG.sound.volume;
         _painSound02 = FlxG.sound.load("assets/sounds/Flapstick_pain_grunts/FS_pain_02.wav");
+        _painSound02.volume = FlxG.sound.volume;
 
         _painSounds = [_painSound01, _painSound02];
 
