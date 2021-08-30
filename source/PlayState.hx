@@ -149,8 +149,8 @@ class PlayState extends FlxState
 			giving them a more specific collide until I figure that shit out
 		 */
 
-		FlxG.collide(_objects, _tilemap);
-		FlxG.collide(_bullets, _tilemap, bulletWall);
+		FlxG.collide(_objects, _tilemap, objectCollide);
+		//FlxG.collide(_bullets, _tilemap, bulletWall);
 		FlxG.overlap(_npcs, _pistolBullets, npcShot);
 		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
@@ -179,6 +179,12 @@ class PlayState extends FlxState
 	{
 		// specifically kills bullets on impact with world boundaries
 		obj1.kill();
+	}
+
+	function objectCollide(obj1:FlxObject, tmap:FlxTilemap){
+		if((obj1 is Bullet)){
+			obj1.kill();
+		}
 	}
 
 	function pickupItem(player:Player, item:Pickup)
