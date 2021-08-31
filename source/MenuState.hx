@@ -58,7 +58,7 @@ class MenuState extends FlxState
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
 
-		_buttonWidth = _screenWidth - 120;
+		_buttonWidth = _screenWidth - 160;
 
 		//FlxG.autoPause = true;  I think this breaks the music?
 
@@ -88,7 +88,7 @@ class MenuState extends FlxState
 		_mainMenu.forEach(loadButtonGraphic);
 
 		// === OPTIONS CONSTRUCTORS ===
-		_optionsCloseButton = new FlxUIButton(0, FlxG.height / 2, "Back", closeOptions);
+		_optionsCloseButton = new FlxUIButton(64, FlxG.height / 2, "Back", closeOptions);
 		add(_optionsCloseButton);
 
 		_volUpButton = new FlxUIButton(_buttonWidth, 90, '+', volumeUp);
@@ -97,7 +97,7 @@ class MenuState extends FlxState
 		_volDownButton = new FlxUIButton(_buttonWidth - 32, 90, '-', volumeDown);
 		add(_volDownButton);
 
-		_fullscreenButton = new FlxUIButton(_buttonWidth, 180, "Fullscreen", fullscreenToggle);
+		_fullscreenButton = new FlxUIButton(_buttonWidth - 46, 180, "Fullscreen", fullscreenToggle);
 		add(_fullscreenButton);
 
 		_gameVolUp = new FlxUIButton(_buttonWidth, 122, '+', gameVolUp);
@@ -225,7 +225,8 @@ class MenuState extends FlxState
 
 	// assigns the graphic to use for the main menu buttons
 	function loadButtonGraphic(button:FlxUIButton){
-		button.loadGraphic("assets/images/ui/bloodbutton.png");
+		//button.loadGraphic("assets/images/ui/bloodbutton.png");
+		button.loadGraphicsUpOverDown("assets/images/ui/bloodFrames.png");
 		button.label.offset.set(25, -25);
 		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
 	}
