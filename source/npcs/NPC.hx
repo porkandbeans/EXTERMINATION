@@ -1,14 +1,5 @@
 package npcs;
 
-/*
-I've no more fucks to give
-my fucks have all dissolved
-I plan many projects but my fucks won't be involved
-I've no more fucks to give
-my fucks have all been  spent
-they've fucked off from the building and I don't know where they went
-*/
-
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.math.FlxRandom;
@@ -132,7 +123,5 @@ class NPC extends FlxSprite {
 
     function finalDeath(obj:FlxTimer){
         kill();// 死ね
-
-        // test comment
     }
 }
