@@ -1,4 +1,3 @@
-.vscode/*
 export/*
 export/html5/*
 krita_projects/
@@ -17,3 +16,4 @@ Raw_voices/Flapstick/Getting_hurt.mp3
 Raw_voices/Flapstick/Getting_hurt.mp3.reapeaks
 Raw_voices/Flapstick/Hopefully_Useful.mp3
 Raw_voices/Flapstick/Hopefully_Useful.mp3.reapeaks
+push.sh
