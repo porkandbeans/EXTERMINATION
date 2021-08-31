@@ -41,6 +41,9 @@ class MenuState extends FlxState
 	var _gameVolUp:FlxUIButton; // master +
 	var _gameVolDown:FlxUIButton; // master -
 	var _fullscreenButton:FlxUIButton;
+	// these are grouped because they need a unique graphic
+	// also butts is a funny name
+	var _pmButts:FlxTypedGroup<FlxUIButton>;
 
 	var _menuMusic:FlxSound;
 
@@ -128,9 +131,7 @@ class MenuState extends FlxState
 		_optionsMenu.add(_musVolumeDisp);
 		_optionsMenu.add(_gVolumeDisp);
 
-		// these are grouped because they need a unique graphic
-		// also butts is a funny name
-		var _pmButts = new FlxTypedGroup<FlxUIButton>();
+		_pmButts = new FlxTypedGroup<FlxUIButton>();
 		_pmButts.add(_volUpButton);
 		_pmButts.add(_volDownButton);
 		_pmButts.add(_gameVolUp);
@@ -168,73 +169,62 @@ class MenuState extends FlxState
 	}
 
 	// called in a loop
-	function hideButton(button:FlxBasic)
-	{
+	function hideButton(button:FlxBasic){
 		button.visible = false;
 	}
 
 	// called in a loop
-	function showButton(button:FlxBasic)
-	{
+	function showButton(button:FlxBasic){
 		button.visible = true;
 	}
 
 	// displays the main menu
-	function clickPlay()
-	{
+	function clickPlay(){
 		_startButton.visible = false;
 		_mainMenu.forEach(showButton);
 	}
 
 	// switches to PlayState.hx
-	function newGame()
-	{
+	function newGame(){
 		save.close();
 		FlxG.sound.music.pause();
 		FlxG.switchState(new PlayState());
 	}
 
 	// hides main menu and displays the options menu
-	function optionsMenu()
-	{
+	function optionsMenu(){
 		_mainMenu.forEach(hideButton);
 		_optionsMenu.forEach(showButton);
 	}
 
 	// hides options menu and displays the main menu
-	function closeOptions()
-	{
+	function closeOptions(){
 		_optionsMenu.forEach(hideButton);
 		_mainMenu.forEach(showButton);
 	}
 
-	function continueGame()
-	{
+	function continueGame(){
 		// this doesn't do anything right now
 	}
 
-	function levelsMenu()
-	{
+	function levelsMenu(){
 		// this doesn't do anything right now
 	}
 
-	function volumeUp()
-	{
+	function volumeUp(){
 		FlxG.sound.music.volume += 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
 		updateVolumeMus();
 	}
 
-	function volumeDown()
-	{
+	function volumeDown(){
 		FlxG.sound.music.volume -= 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
 		updateVolumeMus();
 	}
 
 	// assigns the graphic to use for the main menu buttons
-	function loadButtonGraphic(button:FlxUIButton)
-	{
+	function loadButtonGraphic(button:FlxUIButton){
 		button.loadGraphic("assets/images/ui/bloodbutton.png");
 		button.label.offset.set(25, -25);
 		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
@@ -242,14 +232,16 @@ class MenuState extends FlxState
 
 	// loads the graphics for the + and - buttons in the options menu
 	function loadSmallGraphics(button:FlxUIButton){
-		button.loadGraphic("assets/images/ui/buttonSmall.png");
+		//button.setGraphicSize(32,32);
+		button.loadGraphicsUpOverDown("assets/images/ui/buttonframes.png");
+		//button.loadGraphic("assets/images/ui/buttonSmall.png");
 		button.label.offset.set(0, -6);
 		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
 	}
 
-	function fullscreenToggle()
-	{
+	function fullscreenToggle(){
 		FlxG.fullscreen = !FlxG.fullscreen;
+		FlxG.fullscreen ? _fullscreenButton.label.text="Fullscreen't" : _fullscreenButton.label.text="Fullscreen";
 	}
 
 	function gameVolUp(){

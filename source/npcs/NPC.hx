@@ -58,7 +58,6 @@ class NPC extends FlxSprite {
     }
 
     override public function update(elapsed:Float){
-        super.update(elapsed);
         physics();
         
         if(alive){
@@ -67,6 +66,7 @@ class NPC extends FlxSprite {
         }
 
         _touchingFloor = isTouching(FlxObject.FLOOR);
+        super.update(elapsed);
     }
 
     function physics(){
@@ -90,14 +90,14 @@ class NPC extends FlxSprite {
             case 0:
                 acceleration.x = -60;
                 flipX = true;
-                if(velocity.x >= 0){
+                if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
                     jump();
                 }
                 return;
             case 1:
                 acceleration.x = 60;
                 flipX = false;
-                if(velocity.x <= 0){
+                if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
                     jump();
                 }
                 return;
@@ -105,9 +105,7 @@ class NPC extends FlxSprite {
     }
 
     function jump(){
-        if(isTouching(FlxObject.FLOOR)){
-            velocity.y = -200;
-        }
+        velocity.y = -100;
     }
 
     public function getStabbed(){
