@@ -126,5 +126,11 @@ class NPC extends FlxSprite {
         alive = false;
         acceleration.x = 0;
         health = 0;
+
+        new FlxTimer().start(3, finalDeath);
+    }
+
+    function finalDeath(obj:FlxTimer){
+        kill();// 死ね
     }
 }
