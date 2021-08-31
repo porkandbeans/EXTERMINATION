@@ -132,5 +132,7 @@ class NPC extends FlxSprite {
 
     function finalDeath(obj:FlxTimer){
         kill();// 死ね
+
+        // test comment
     }
 }
