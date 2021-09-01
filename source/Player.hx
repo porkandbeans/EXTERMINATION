@@ -320,8 +320,9 @@ class Player extends FlxSprite
 	}
 }
 
-/* BUGS
+/* TODO
 
-- picking up the rifle before picking up the pistol prevents you from being able to use the pistol
+	ducking/crouching (this is slowly becoming alien hominid)
+	more NPC types
 
 */

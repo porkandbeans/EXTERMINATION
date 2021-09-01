@@ -35,4 +35,6 @@ class Rifle extends Gun{
     function doneShooting(timer:FlxTimer){
         _canShoot = true;
     }
+    
+    // TODO: maybe give the bullet a little gravity so that it arcs downward
 }

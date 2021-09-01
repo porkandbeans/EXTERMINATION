@@ -45,7 +45,7 @@ class NPC extends FlxSprite {
 
         animation.add("idle", [0]);
         animation.add("stabbed", [1,2,3,4], 4, false);
-        FlxG.watch.add(this, "_touchingFloor");
+        animation.add("walk", [8,9,10,11,12,13,14,15], 8, true);
     }
 
     override public function update(elapsed:Float){
@@ -68,7 +68,7 @@ class NPC extends FlxSprite {
         if(_newAction){
             _newAction = false;
             new FlxTimer().start(_random.float(0,3), newAction, 1); // random float between 0 and 3 amount of seconds before choosing next action to take
-            _currentAction = _random.int(0,1);
+            _currentAction = _random.int(0,2);
         }
     }
 
@@ -79,19 +79,25 @@ class NPC extends FlxSprite {
     function doAction(){
         switch(_currentAction){
             case 0:
-                acceleration.x = -60;
+                animation.play("walk");
+                acceleration.x = -60; // walk left
                 flipX = true;
                 if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
                     jump();
                 }
                 return;
             case 1:
-                acceleration.x = 60;
+                animation.play("walk");
+                acceleration.x = 60; // walk right 
                 flipX = false;
                 if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
                     jump();
                 }
                 return;
+            case 2:
+                acceleration.x = 0;
+                animation.play("idle");
+                return; // stand still for a bit
         }
     }
 
@@ -123,5 +129,7 @@ class NPC extends FlxSprite {
 
     function finalDeath(obj:FlxTimer){
         kill();// 死ね
+
+        //TODO: fade-out animation maybe?
     }
 }
