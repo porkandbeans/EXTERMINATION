@@ -12,19 +12,21 @@ class Pistol extends Gun{
         ammo = 12;
         _bullets = bullets;
         _canShoot = true;
+        loadSound("assets/sounds/sound_effects/guns/pistol.wav");
     }
 
     override public function shoot(x:Float, y:Float, f:Bool){
         super.shoot(x, y, f);
-        if(_canShoot && !_empty){
+        if(_canShoot && !_empty){ // if the gun is NOT on cooldown and HAS ammo 
             _canShoot = false;
             ammo--;
             _timer.start(0.4, doneShooting, 1);
-            if(f){
+            if(f){ // determines the bullet's direction
                 _bullets.recycle(Bullet.new).shoot(x, y, -240);
             }else{
                 _bullets.recycle(Bullet.new).shoot(x, y, 240);
             }
+            _shot.play(true);
         }
     }
 

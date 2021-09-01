@@ -62,7 +62,7 @@ class Player extends FlxSprite
 		setSize(16, 32); // makes the hitbox better
 		offset.set(8, 0);
 
-		// === ANI4MATIONS ===
+		// === ANIMATIONS ===
 		animation.add("idle", [0]);
 		animation.add("run", [1,2,3,4,5,6,7,8], 9, true);
 		animation.add("jump", [9,10], 4, false);
@@ -70,6 +70,12 @@ class Player extends FlxSprite
 		animation.add("melee", [13,14,15], 12, false); 
 		animation.add("idlePistol", [16]);
 		animation.add("runPistol", [17, 18, 19, 20, 21, 22, 23, 24], 9, true);
+		animation.add("jumpPistol", [25,26], 4, false);
+		animation.add("fallPistol", [27, 28], 9, true);
+		animation.add("idleRifle", [32]);
+		animation.add("runRifle", [33, 34, 35, 36, 37, 38, 39, 40], 9, true);
+		animation.add("jumpRifle", [41, 42], 4, false);
+		animation.add("fallRifle", [43, 44], 9, true);
     }
 
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
@@ -174,9 +180,11 @@ class Player extends FlxSprite
 				}
 			}else{
 				if(velocity.y > -0.7){
-					animation.play("fall");
+					fall();
+					//animation.play("fall");
 				}else if(isTouching(FlxObject.FLOOR)){
-					animation.play("jump");
+					jump();
+					//animation.play("jump");
 				}
 			}
 		}
@@ -204,7 +212,7 @@ class Player extends FlxSprite
 				animation.play("idlePistol");
 				return;
 			case 2:
-				animation.play("idle");
+				animation.play("idleRifle");
 				return;
 		}
 	}
@@ -218,7 +226,35 @@ class Player extends FlxSprite
 				animation.play("runPistol");
 				return;
 			case 2:
-				animation.play("run");
+				animation.play("runRifle");
+				return;
+		}
+	}
+
+	function jump(){
+		switch(_heldWeapons[current_weapon]){
+			case 0:
+				animation.play("jump");
+				return;
+			case 1:
+				animation.play("jumpPistol");
+				return;
+			case 2:
+				animation.play("jumpRifle");
+				return;
+		}
+	}
+
+	function fall(){
+		switch(_heldWeapons[current_weapon]){
+			case 0:
+				animation.play("fall");
+				return;
+			case 1:
+				animation.play("fallPistol");
+				return;
+			case 2:
+				animation.play("fallRifle");
 				return;
 		}
 	}
