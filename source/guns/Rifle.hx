@@ -20,15 +20,12 @@ class Rifle extends Gun{
         super.shoot(x,y,f);
         if(_canShoot && !_empty){ // if the gun is NOT on cooldown and HAS ammo 
             _canShoot = false;
-            ammo--;
             _timer.start(2, doneShooting, 1);
             if(f){ // determines direction bullet will travel
                 _bullets.recycle(Bullet.new).shoot(x,y, -960);
             }else{
                 _bullets.recycle(Bullet.new).shoot(x,y, 960);
             }
-
-            _shot.play(true);
         }
     }
 

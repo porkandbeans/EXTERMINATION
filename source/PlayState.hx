@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxState;
@@ -134,10 +135,20 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		collisions();
+		pauseListen();
 		FlxG.camera.follow(_player, PLATFORMER, 1);
 		super.update(elapsed);
 	}
 
+	// === PAUSE THE GAME ===
+	function pauseListen(){
+		if(FlxG.keys.justPressed.P){
+			_objects.forEach((obj:FlxBasic) -> {
+				obj.active = !obj.active;
+			});
+			_hud.pauseGame();
+		}
+	}
 	function collisions()
 	{
 		// FlxG.collide(_tilemap, _player);

@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxPoint;
 import guns.Rifle;
 import guns.Bullet;
 import guns.Pistol;
@@ -22,6 +23,7 @@ class Player extends FlxSprite
 	var _attacking:Bool;
 	var _pedestrians:FlxTypedGroup<NPC>;
 	var _heldWeapons:Array<Int>;
+	var _crouching:Bool;
 	
 	// weapons
 	var _wep_names:Array<String>;
@@ -76,6 +78,9 @@ class Player extends FlxSprite
 		animation.add("runRifle", [33, 34, 35, 36, 37, 38, 39, 40], 9, true);
 		animation.add("jumpRifle", [41, 42], 4, false);
 		animation.add("fallRifle", [43, 44], 9, true);
+		animation.add("crouch", [48]);
+		animation.add("crouchPistol", [49]);
+		animation.add("crouchRifle", [50]);
     }
 
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
@@ -158,6 +163,12 @@ class Player extends FlxSprite
 				cycleWeps();
 				updateHUD();
 			}
+
+			if(FlxG.keys.anyPressed([S, DOWN]) && velocity.x == 0 && velocity.y == 0){
+				_crouching = true;
+			}else{
+				_crouching = false;
+			}
 		}
     }
 
@@ -173,7 +184,7 @@ class Player extends FlxSprite
 		if(!_attacking){
 			if(velocity.y == 0){
 				if (velocity.x == 0){
-					idle(); 
+					_crouching?crouch():idle(); 
 				}
 				else{
 					run();
@@ -259,6 +270,21 @@ class Player extends FlxSprite
 		}
 	}
 
+	function crouch(){
+		_crouching = true;
+		switch(_heldWeapons[current_weapon]){
+			case 0:
+				animation.play("crouch");
+				return;
+			case 1:
+				animation.play("crouchPistol");
+				return;
+			case 2:
+				animation.play("crouchRifle");
+				return;
+		}
+	}
+
 	function finishAttacking(timer:FlxTimer):Void {
 		_canAttack = true;
 	}
@@ -269,11 +295,11 @@ class Player extends FlxSprite
 				stab();
 				return;
 			case 1:
-				pistol.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				pistol.shoot(getMidpoint().x, _crouching?(getMidpoint().y + 5):getMidpoint().y, flipX);
 				updateHUD();
 				return;
 			case 2:
-				rifle.shoot(getMidpoint().x, getMidpoint().y, flipX);
+				rifle.shoot(getMidpoint().x, _crouching?(getMidpoint().y + 5):getMidpoint().y, flipX);
 				updateHUD();
 				return;
 		}
@@ -296,17 +322,11 @@ class Player extends FlxSprite
 	}
 
 	public function pistolRestock(qty:Int){
-		pistol.ammo += qty;
-		if(pistol.ammo > pistol.getMaxAmmo()){
-			pistol.ammo = pistol.getMaxAmmo();
-		}
+		pistol.addAmmo(qty);
 	}
 
 	public function rifleRestock(qty:Int){
-		rifle.ammo += qty;
-		if(rifle.ammo > rifle.getMaxAmmo()){
-			rifle.ammo = rifle.getMaxAmmo();
-		}
+		rifle.addAmmo(qty);
 	}
 
 	public function pickupRifle(){
@@ -322,7 +342,10 @@ class Player extends FlxSprite
 
 /* TODO
 
-	ducking/crouching (this is slowly becoming alien hominid)
 	more NPC types
+	pause functionality
+	dynamic stereo sound? figure it out, genius
+
+	sound is still bleeding into playstate.hx from the menu state and I don't even know why
 
 */

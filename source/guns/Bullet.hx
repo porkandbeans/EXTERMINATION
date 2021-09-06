@@ -6,7 +6,8 @@ import flixel.FlxSprite;
 class Bullet extends FlxSprite{
     public function new(){
         super();
-        makeGraphic(4, 4, FlxColor.WHITE);
+        //makeGraphic(4, 4, FlxColor.WHITE);
+        loadGraphic("assets/images/misc/bullet.png", false, 4, 4);
     }
 
     public function shoot(x:Float, y:Float, v:Float){

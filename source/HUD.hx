@@ -3,6 +3,7 @@ package;
 /*import flixel.util.FlxColor;
 import flixel.tweens.misc.ColorTween;
 import flixel.ui.FlxBar;*/
+import flixel.system.FlxSound;
 import flixel.FlxG;
 import flixel.text.FlxText;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -17,6 +18,9 @@ class HUD extends FlxTypedGroup<FlxSprite>{
     var _ammoText:FlxText;
     var _gun:FlxText;
 
+    var _pauseTxt:FlxText;
+    var _pauseSound:FlxSound;
+
     public function new(){
 		super();
 
@@ -26,6 +30,13 @@ class HUD extends FlxTypedGroup<FlxSprite>{
         
         _ammoText = new FlxText(FlxG.width - 20, 0, 20, "0", 8);
         add(_ammoText);
+
+        _pauseTxt = new FlxText(FlxG.width / 2, FlxG.height / 2, 0, "PAUSE", 20);
+        _pauseTxt.screenCenter();
+        add(_pauseTxt);
+        _pauseTxt.visible = false;
+
+        _pauseSound = FlxG.sound.load("assets/sounds/sound_effects/ui/pause.wav");
         
         /*_floatyBar = new FlxBar(10, 5, LEFT_TO_RIGHT, (FlxG.width - 20), 20, null, "_floatPower", 0, 100, true);
         _floatyBar.createFilledBar(null, FlxColor.WHITE, true, FlxColor.BLACK);
@@ -78,5 +89,10 @@ class HUD extends FlxTypedGroup<FlxSprite>{
                 _ammoText.text = Std.string(ammo);
                 return;
         }
+    }
+
+    public function pauseGame(){
+        _pauseTxt.visible = !_pauseTxt.visible;
+        _pauseSound.play(true);
     }
 }

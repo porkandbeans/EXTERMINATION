@@ -10,7 +10,7 @@ class PistolAmmo extends Pickup{
     }
 
     override public function get(player:Player){
-        super.get(player);
+        super.get(player); // updates the HUD
         if(player.pistol.ammo >= player.pistol.getMaxAmmo()){
             return;
         }
