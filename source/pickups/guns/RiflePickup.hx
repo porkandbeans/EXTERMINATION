@@ -10,10 +10,14 @@ class RiflePickup extends RifleAmmo{
     }
 
     override public function get(player:Player){
+        super.get(player);
         if(!player.hasRifle){
             player.pickupRifle();
         }
-        super.get(player);
-        kill();
+            
+        if(player.rifle.ammo < player.rifle.getMaxAmmo()){
+            player.rifle.addAmmo(12);
+            kill();
+        }
     }
 }

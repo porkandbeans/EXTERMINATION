@@ -1,5 +1,7 @@
 package;
 
+import npcs.NPC;
+import npcs.Ped01;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -10,7 +12,6 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
-import npcs.NPC;
 import pickups.Pickup;
 import pickups.ammo.PistolAmmo;
 import pickups.ammo.RifleAmmo;
@@ -25,7 +26,7 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
-	var _npcs:FlxTypedGroup<NPC>;
+	var _npcs:FlxTypedGroup<Ped01>;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
 
@@ -54,7 +55,7 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(1, FlxObject.NONE);
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 
-		_npcs = new FlxTypedGroup<NPC>();
+		_npcs = new FlxTypedGroup<Ped01>();
 
 		_player = new Player();
 
@@ -120,7 +121,7 @@ class PlayState extends FlxState
 			case "player":
 				_player.setPosition(entity.x, entity.y);
 			case "NPC":
-				_npcs.add(new NPC(entity.x - 16, entity.y - 16));
+				_npcs.add(new Ped01(entity.x - 16, entity.y - 16));
 			case "pistolammo":
 				_pistolAmmo.add(new PistolAmmo(entity.x, entity.y - 4));
 			case "rifleammo":

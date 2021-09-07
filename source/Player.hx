@@ -1,5 +1,6 @@
 package;
 
+import npcs.Ped01;
 import flixel.math.FlxPoint;
 import guns.Rifle;
 import guns.Bullet;
@@ -21,7 +22,7 @@ class Player extends FlxSprite
 	var _canJump:Bool;
 	var _canAttack:Bool;
 	var _attacking:Bool;
-	var _pedestrians:FlxTypedGroup<NPC>;
+	var _pedestrians:FlxTypedGroup<Ped01>;
 	var _heldWeapons:Array<Int>;
 	var _crouching:Bool;
 	
@@ -61,8 +62,8 @@ class Player extends FlxSprite
 		_jumpHold = MAX_JUMPHOLD;
 
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
-		setSize(16, 32); // makes the hitbox better
-		offset.set(8, 0);
+		setSize(16, 24); // makes the hitbox better
+		offset.set(8, 8);
 
 		// === ANIMATIONS ===
 		animation.add("idle", [0]);
@@ -290,16 +291,18 @@ class Player extends FlxSprite
 	}
 
 	function attack(){
+		var _x:Float = getMidpoint().x;
+		var _y:Float = getMidpoint().y;
 		switch(_heldWeapons[current_weapon]){
 			case 0:
 				stab();
 				return;
 			case 1:
-				pistol.shoot(getMidpoint().x, _crouching?(getMidpoint().y + 5):getMidpoint().y, flipX);
+				pistol.shoot(_x, _crouching?(_y + 3):_y - 2, flipX);
 				updateHUD();
 				return;
 			case 2:
-				rifle.shoot(getMidpoint().x, _crouching?(getMidpoint().y + 5):getMidpoint().y, flipX);
+				rifle.shoot(_x, _crouching?(_y + 3):_y - 2, flipX);
 				updateHUD();
 				return;
 		}
@@ -313,7 +316,7 @@ class Player extends FlxSprite
 		FlxG.overlap(this, _pedestrians, pedGetStabbed);
 	}
 
-	public function declarePeds(peds:FlxTypedGroup<NPC>){
+	public function declarePeds(peds:FlxTypedGroup<Ped01>){
 		_pedestrians = peds;
 	}
 
@@ -342,10 +345,27 @@ class Player extends FlxSprite
 
 /* TODO
 
-	more NPC types
-	pause functionality
 	dynamic stereo sound? figure it out, genius
 
-	sound is still bleeding into playstate.hx from the menu state and I don't even know why
+	hello again mister TODO! I'm writing this little thing in Player.hx for some reason. not sure why this
+	became the place for it. oh well.
+
+	anyway, at the time of writing, I've had an idea to finish this weird little project off
+	make a couple different maps and an NPC spawner, and include some environmental dangers
+	like moving cars, crushing objects, keep the player moving at all times for the danger
+	give the player points for each person they kill, and at the end, show them how well they did. give them achievements
+	for the pistol and the rifle if they find them in the map. include Newgrounds high-scores.
+
+	add cops that shoot the player that appear after a certain number of kills
+
+	blood particle effects
+	
+	use this engine you've made here to make your RPG?
+
+	there really needs to be more sound. footsteps. Player voice. ambience. needs some gameplay music, too.
+
+	melee attacks feel a bit wrong.
+
+	idk what else to do right now, so I'm just gonna push.
 
 */

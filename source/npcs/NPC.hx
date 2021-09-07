@@ -3,7 +3,6 @@ package npcs;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.math.FlxRandom;
-import flixel.FlxG;
 import flixel.system.FlxSound;
 import flixel.FlxSprite;
 
@@ -11,12 +10,14 @@ class NPC extends FlxSprite {
     var _random:FlxRandom;
     var _painSound01:FlxSound;
     var _painSound02:FlxSound;
+    var _painSound03:FlxSound;
     var _painSounds:Array<FlxSound>;
     var _currentAction:Int;
     var _newAction:Bool;
     var _canJump:Bool;
     var _weight:Float = 300;
     var _touchingFloor:Bool; // debugging only
+
 
     public function new(x:Float = 0, y:Float = 0)
     {
@@ -26,26 +27,10 @@ class NPC extends FlxSprite {
         _canJump = true;
 
         _random = new FlxRandom();
-        health = 10;
-
-        loadGraphic("assets/images/NPCs/NPC1.png", true, 32, 32);
-        setSize(16, 32);
-        offset.set(8, 0);
 
         maxVelocity.set(60, 200);
         acceleration.y = _weight;
         drag.x = maxVelocity.x * 5;
-        
-        _painSound01 = FlxG.sound.load("assets/sounds/Flapstick_pain_grunts/FS_pain_01.wav");
-        _painSound01.volume = FlxG.sound.volume;
-        _painSound02 = FlxG.sound.load("assets/sounds/Flapstick_pain_grunts/FS_pain_02.wav");
-        _painSound02.volume = FlxG.sound.volume;
-
-        _painSounds = [_painSound01, _painSound02];
-
-        animation.add("idle", [0]);
-        animation.add("stabbed", [1,2,3,4], 4, false);
-        animation.add("walk", [8,9,10,11,12,13,14,15], 8, true);
     }
 
     override public function update(elapsed:Float){
@@ -113,6 +98,8 @@ class NPC extends FlxSprite {
                     _painSound01.play(true);
                 case 1:
                     _painSound02.play(true);
+                case 2:
+                    _painSound03.play(true);
             }
             
             die();
