@@ -1,5 +1,7 @@
 package;
 
+import npcs.Cop;
+import flixel.group.FlxGroup;
 import npcs.Ped01;
 import flixel.math.FlxPoint;
 import guns.Rifle;
@@ -22,7 +24,7 @@ class Player extends FlxSprite
 	var _canJump:Bool;
 	var _canAttack:Bool;
 	var _attacking:Bool;
-	var _pedestrians:FlxTypedGroup<Ped01>;
+	var _pedestrians:FlxGroup;
 	var _heldWeapons:Array<Int>;
 	var _crouching:Bool;
 	
@@ -313,13 +315,28 @@ class Player extends FlxSprite
 		_canAttack = false;
 		animation.play("melee");
 		new FlxTimer().start(0.5, finishAttacking, 1);
-		FlxG.overlap(this, _pedestrians, pedGetStabbed);
+		//FlxG.overlap(this, _pedestrians, pedGetStabbed);
+
+		/*
+		TODO:
+			Instead of this garbage, make a square in front of the player.
+			in PlayState.hx, check for overlaps.
+			call getStabbed() there.
+		*/
 	}
 
+	/*
 	public function declarePeds(peds:FlxTypedGroup<Ped01>){
-		_pedestrians = peds;
+		_pedestrians.add(peds);
 	}
 
+	public function declareCops(peds:FlxTypedGroup<Cop>){
+		_pedestrians.add(peds);
+	}
+	*/
+
+	// just going to break stabbing for now until I think of how to fix this
+	
 	function pedGetStabbed(me:Player, ped:NPC){
 		ped.getStabbed();
 	}

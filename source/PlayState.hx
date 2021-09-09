@@ -1,7 +1,9 @@
 package;
 
+import js.html.CacheStorage;
 import npcs.NPC;
 import npcs.Ped01;
+import npcs.Cop;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -27,6 +29,7 @@ class PlayState extends FlxState
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
 	var _npcs:FlxTypedGroup<Ped01>;
+	var _cops:FlxTypedGroup<Cop>;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
 
@@ -56,14 +59,19 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 
 		_npcs = new FlxTypedGroup<Ped01>();
+		_cops = new FlxTypedGroup<Cop>();
 
 		_player = new Player();
 
-		_player.declarePeds(_npcs);
+		//_player.declarePeds(_npcs);
+		//_player.declareCops(_cops);
 
 		// === PICKUP DECLARATIONS ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
+
+		
+		
 		_player.declareBullets(_pistolBullets, _rifleBullets); // the player needs these for his weapon classes
 		_pistolAmmo = new FlxTypedGroup<PistolAmmo>();
 		_rifleAmmo = new FlxTypedGroup<RifleAmmo>();
@@ -81,6 +89,7 @@ class PlayState extends FlxState
 		_objects.add(_rifleBullets);
 		_objects.add(_tilemap);
 		_objects.add(_npcs);
+		_objects.add(_cops);
 
 		// === PICKUPS GROUP ===
 		_pickups = new FlxGroup();
@@ -98,6 +107,7 @@ class PlayState extends FlxState
 		add(_backdrop);
 		add(_tilemap);
 		add(_npcs);
+		add(_cops);
 		add(_player);
 		add(_pistolBullets);
 		add(_rifleBullets);
@@ -122,6 +132,8 @@ class PlayState extends FlxState
 				_player.setPosition(entity.x, entity.y);
 			case "NPC":
 				_npcs.add(new Ped01(entity.x - 16, entity.y - 16));
+			case "cop":
+				_cops.add(new Cop(entity.x - 16, entity.y - 16));
 			case "pistolammo":
 				_pistolAmmo.add(new PistolAmmo(entity.x, entity.y - 4));
 			case "rifleammo":
@@ -152,19 +164,11 @@ class PlayState extends FlxState
 	}
 	function collisions()
 	{
-		// FlxG.collide(_tilemap, _player);
-		
-		/*
-			having issues with the 'is' operator here, works on my desktop
-			but not on my laptop...
-
-			giving them a more specific collide until I figure that shit out
-		 */
-
 		FlxG.collide(_objects, _tilemap, objectCollide);
-		//FlxG.collide(_bullets, _tilemap, bulletWall);
-		FlxG.overlap(_npcs, _pistolBullets, npcShot);
-		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot);
+		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot); // check for rifle shots first
+		FlxG.overlap(_cops, _rifleBullets, riflenpcShot); // as the pistol bullets will override
+		FlxG.overlap(_npcs, _bullets, npcShot);
+		FlxG.overlap(_cops, _bullets, npcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
 	}
 
@@ -179,6 +183,7 @@ class PlayState extends FlxState
 	}
 
 	// unique callback for penetrating shots
+	// difference is, the bullet doesn't get killed
 	function riflenpcShot(sprite1:NPC, sprite2:Bullet)
 	{
 		if (sprite1.health > 0)

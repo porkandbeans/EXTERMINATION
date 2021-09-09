@@ -4,7 +4,7 @@ import flixel.FlxG;
 
 enum PedType{
     FLAPSTICK;
-    GOOAYGAR;
+    GOOAYGAR; // my voice actors
 }
 
 class Ped01 extends NPC{
@@ -14,23 +14,16 @@ class Ped01 extends NPC{
 
     override public function new(x:Float = 0, y:Float = 0){
         super(x,y);
-        health = 10;
+        health = 10; // this is still here for some reason
         
+        // determines which version of the pedestrian will spawn
         genderAssign();
 
-        setSize(16, 24);
-        offset.set(8, 8);
-
+        // load sounds from directory
         sounds();
-        _painSound01.volume = FlxG.sound.volume;
-        _painSound02.volume = FlxG.sound.volume;
-        _painSound03.volume = FlxG.sound.volume;
-
-        _painSounds = [_painSound01, _painSound02, _painSound03];
-
-        animation.add("idle", [0]);
-        animation.add("stabbed", [1,2,3,4], 4, false);
-        animation.add("walk", [8,9,10,11,12,13,14,15], 8, true);
+        
+        // perform all the necessary stuff to make this NPC a walking, dying, thingamajigger
+        init();
     }
 
     // assigns type specifics

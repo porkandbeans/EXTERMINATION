@@ -1,5 +1,6 @@
 package npcs;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
 import flixel.math.FlxRandom;
@@ -31,6 +32,7 @@ class NPC extends FlxSprite {
         maxVelocity.set(60, 200);
         acceleration.y = _weight;
         drag.x = maxVelocity.x * 5;
+        
     }
 
     override public function update(elapsed:Float){
@@ -93,6 +95,14 @@ class NPC extends FlxSprite {
     public function getStabbed(){
         if(health > 0){
             animation.play("stabbed");
+            // TODO: this exists because the sounds don't
+            for(sound in _painSounds){
+                if(sound == null){
+                    die();
+                    return; // don't play sounds that don't exist
+                }
+            }
+            
             switch(_random.int(0, _painSounds.length - 1)){
                 case 0:
                     _painSound01.play(true);
@@ -118,5 +128,27 @@ class NPC extends FlxSprite {
         kill();// 死ね
 
         //TODO: fade-out animation maybe?
+    }
+
+    /*
+        Whenever a new NPC type is being declared, this function should be called
+        kinda towards the end of new(). Basically it assigns the hitbox, the volumes,
+        animations, all the stuff that NPCs should just globally have.
+    */
+    function init(){
+        setSize(16, 24);
+        offset.set(8, 8);
+
+        _painSounds = [_painSound01, _painSound02, _painSound03];
+
+        for(sound in _painSounds){
+            if(sound != null){ // TODO: this is only here because I don't have death sounds for the cops yet
+                sound.volume = FlxG.sound.volume;
+            }
+        }
+
+        animation.add("idle", [0]);
+        animation.add("stabbed", [1,2,3,4], 4, false);
+        animation.add("walk", [8,9,10,11,12,13,14,15], 8, true);
     }
 }
