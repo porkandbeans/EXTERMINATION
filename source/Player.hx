@@ -27,6 +27,7 @@ class Player extends FlxSprite
 	var _pedestrians:FlxGroup;
 	var _heldWeapons:Array<Int>;
 	var _crouching:Bool;
+	var _moving:Bool;
 	
 	// weapons
 	var _wep_names:Array<String>;
@@ -64,8 +65,8 @@ class Player extends FlxSprite
 		_jumpHold = MAX_JUMPHOLD;
 
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
-		setSize(16, 24); // makes the hitbox better
-		offset.set(8, 8);
+		setSize(16, 26); // makes the hitbox better
+		offset.set(8, 6);
 
 		// === ANIMATIONS ===
 		animation.add("idle", [0]);
@@ -128,10 +129,12 @@ class Player extends FlxSprite
 		if(!_attacking){
 			if (FlxG.keys.anyPressed([LEFT, A])){
 				acceleration.x = -maxVelocity.x * 7;
-			}
-
-			if (FlxG.keys.anyPressed([RIGHT, D])){
+				_moving = true;
+			}else if (FlxG.keys.anyPressed([RIGHT, D])){
 				acceleration.x = maxVelocity.x * 7;
+				_moving = true;
+			}else{
+				_moving = false;
 			}
 			
 			// fixes being able to spam jump while in the air
@@ -167,10 +170,20 @@ class Player extends FlxSprite
 				updateHUD();
 			}
 
-			if(FlxG.keys.anyPressed([S, DOWN]) && velocity.x == 0 && velocity.y == 0){
-				_crouching = true;
+			if(FlxG.keys.anyPressed([S, DOWN]) && !_moving){
+				if(!_crouching){
+					_crouching = true;
+					offset.set(8, 16);
+					y = y + 10;
+					setSize(16, 16);
+				}
 			}else{
-				_crouching = false;
+				if(_crouching){
+					_crouching = false;
+					y = y - 10;
+					offset.set(8, 6);
+					setSize(16, 26);
+				}
 			}
 		}
     }
