@@ -63,9 +63,6 @@ class PlayState extends FlxState
 
 		_player = new Player();
 
-		//_player.declarePeds(_npcs);
-		//_player.declareCops(_cops);
-
 		// === PICKUP DECLARATIONS ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
@@ -116,6 +113,7 @@ class PlayState extends FlxState
 		add(_rifleAmmo);
 		add(_rifles);
 		add(_pistols);
+		add(_player.hitreg);
 
 		// === DEBUGGING STUFF ===
 		FlxG.watch.add(_player, "current_weapon");
@@ -165,6 +163,7 @@ class PlayState extends FlxState
 	function collisions()
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
+		FlxG.overlap(_npcs, _player.hitreg, npcStab);
 		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot); // check for rifle shots first
 		FlxG.overlap(_cops, _rifleBullets, riflenpcShot); // as the pistol bullets will override
 		FlxG.overlap(_npcs, _bullets, npcShot);
@@ -180,6 +179,10 @@ class PlayState extends FlxState
 			sprite2.kill();
 			sprite1.getStabbed();
 		}
+	}
+
+	function npcStab(sprite1:NPC, sprite2:FlxObject){
+		sprite2.active?sprite1.getStabbed():return;
 	}
 
 	// unique callback for penetrating shots

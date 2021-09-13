@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxColor;
 import npcs.Cop;
 import flixel.group.FlxGroup;
 import npcs.Ped01;
@@ -28,6 +29,8 @@ class Player extends FlxSprite
 	var _heldWeapons:Array<Int>;
 	var _crouching:Bool;
 	var _moving:Bool;
+	var _midPoint:FlxPoint;
+	
 	
 	// weapons
 	var _wep_names:Array<String>;
@@ -41,6 +44,7 @@ class Player extends FlxSprite
 	public var rifle:Rifle;
 	public var hasRifle:Bool;
 	public var hasPistol:Bool;
+	public var hitreg:FlxSprite;
 
 	// === CONSTANTS ===
 	var MAX_JUMPHOLD = 20;
@@ -85,6 +89,9 @@ class Player extends FlxSprite
 		animation.add("crouch", [48]);
 		animation.add("crouchPistol", [49]);
 		animation.add("crouchRifle", [50]);
+
+		hitreg = new FlxSprite();
+		hitreg.makeGraphic(10, 10, FlxColor.TRANSPARENT);
     }
 
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
@@ -96,10 +103,22 @@ class Player extends FlxSprite
 
 	override public function update(elapsed:Float)
 	{
+		if(_attacking){
+			hitreg.active=true;
+			hitregPos();
+		}else{
+			hitreg.active=false;
+		}
 		frameInit();
 		keyListeners();
 		animations();
 		super.update(elapsed);
+	}
+
+	function hitregPos(){
+		_midPoint = getMidpoint();
+		flipX ? hitreg.x = _midPoint.x - 15 : hitreg.x = _midPoint.x + 5;
+		hitreg.y = y + 5;
 	}
 
 	function frameInit(){
@@ -310,6 +329,7 @@ class Player extends FlxSprite
 		var _y:Float = getMidpoint().y;
 		switch(_heldWeapons[current_weapon]){
 			case 0:
+				hitregPos();
 				stab();
 				return;
 			case 1:
@@ -328,30 +348,6 @@ class Player extends FlxSprite
 		_canAttack = false;
 		animation.play("melee");
 		new FlxTimer().start(0.5, finishAttacking, 1);
-		//FlxG.overlap(this, _pedestrians, pedGetStabbed);
-
-		/*
-		TODO:
-			Instead of this garbage, make a square in front of the player.
-			in PlayState.hx, check for overlaps.
-			call getStabbed() there.
-		*/
-	}
-
-	/*
-	public function declarePeds(peds:FlxTypedGroup<Ped01>){
-		_pedestrians.add(peds);
-	}
-
-	public function declareCops(peds:FlxTypedGroup<Cop>){
-		_pedestrians.add(peds);
-	}
-	*/
-
-	// just going to break stabbing for now until I think of how to fix this
-	
-	function pedGetStabbed(me:Player, ped:NPC){
-		ped.getStabbed();
 	}
 
 	public function pistolRestock(qty:Int){
@@ -375,10 +371,7 @@ class Player extends FlxSprite
 
 /* TODO
 
-	dynamic stereo sound? figure it out, genius
-
-	hello again mister TODO! I'm writing this little thing in Player.hx for some reason. not sure why this
-	became the place for it. oh well.
+	dynamic stereo sound
 
 	anyway, at the time of writing, I've had an idea to finish this weird little project off
 	make a couple different maps and an NPC spawner, and include some environmental dangers
@@ -393,9 +386,5 @@ class Player extends FlxSprite
 	use this engine you've made here to make your RPG?
 
 	there really needs to be more sound. footsteps. Player voice. ambience. needs some gameplay music, too.
-
-	melee attacks feel a bit wrong.
-
-	idk what else to do right now, so I'm just gonna push.
 
 */
