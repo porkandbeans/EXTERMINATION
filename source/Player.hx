@@ -1,14 +1,11 @@
 package;
 
 import flixel.util.FlxColor;
-import npcs.Cop;
 import flixel.group.FlxGroup;
-import npcs.Ped01;
 import flixel.math.FlxPoint;
 import guns.Rifle;
 import guns.Bullet;
 import guns.Pistol;
-import npcs.NPC;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -48,7 +45,7 @@ class Player extends FlxSprite
 
 	// === CONSTANTS ===
 	var MAX_JUMPHOLD = 20;
-	var	MAX_WEAPONS:Int;
+	var MAX_WEAPONS:Int;
 
     public function new(x:Float = 0, y:Float = 0)
     {
@@ -379,7 +376,9 @@ class Player extends FlxSprite
 	give the player points for each person they kill, and at the end, show them how well they did. give them achievements
 	for the pistol and the rifle if they find them in the map. include Newgrounds high-scores.
 
-	add cops that shoot the player that appear after a certain number of kills
+	cops need to shoot at the player
+
+	add cop voices
 
 	blood particle effects
 	

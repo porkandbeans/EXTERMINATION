@@ -1,6 +1,5 @@
 package;
 
-import js.html.CacheStorage;
 import npcs.NPC;
 import npcs.Ped01;
 import npcs.Cop;
@@ -10,7 +9,6 @@ import flixel.FlxObject;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
