@@ -58,23 +58,23 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(1, FlxObject.NONE);
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 
+		// === ACTORS ===
 		_npcs = new FlxTypedGroup<Ped01>();
 		_cops = new FlxTypedGroup<Cop>();
-
 		_player = new Player();
 
 		// === PICKUP DECLARATIONS ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
 
-		
-		
+		// === GUN STUFF ===
 		_player.declareBullets(_pistolBullets, _rifleBullets); // the player needs these for his weapon classes
 		_pistolAmmo = new FlxTypedGroup<PistolAmmo>();
 		_rifleAmmo = new FlxTypedGroup<RifleAmmo>();
 		_rifles = new FlxTypedGroup<RiflePickup>();
 		_pistols = new FlxTypedGroup<PistolPickup>();
 
+		// === HEADS-UP DISPLAY ===
 		_hud = new HUD();
 		_player.hud = _hud;
 		_player.updateHUD();
@@ -101,23 +101,17 @@ class PlayState extends FlxState
 		_bullets.add(_rifleBullets);
 
 		_map.loadEntities(placeEntities, "entities");
-		add(_backdrop);
-		add(_tilemap);
-		add(_npcs);
-		add(_cops);
-		add(_player);
-		add(_pistolBullets);
-		add(_rifleBullets);
-		add(_hud);
-		add(_pistolAmmo);
-		add(_rifleAmmo);
-		add(_rifles);
-		add(_pistols);
-		add(_player.hitreg);
+		var _addthese = new Array<FlxBasic>();
+		
+		_addthese = [
+			_backdrop, _tilemap, _npcs, _cops, _player, _pistolBullets,
+			_rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols,
+			_player.hitreg
+		];
 
-		// === DEBUGGING STUFF ===
-		FlxG.watch.add(_player, "current_weapon");
-		FlxG.watch.add(_player, "_heldWeapons");
+		for(item in _addthese){
+			add(item);
+		}
 
 		super.create();
 	}
