@@ -9,6 +9,7 @@
 
 package;
 
+import flixel.math.FlxPoint;
 import js.html.FileSystem;
 import haxe.Json;
 import flixel.text.FlxText;
@@ -25,6 +26,7 @@ import io.newgrounds.NG;
 class MenuState extends FlxState
 {
 	var _loginStatusText:FlxText;
+	var _loginButton:FlxUIButton;
 
 	var _musicVolume:Int;
 	var _gameVolume:Int;
@@ -60,17 +62,9 @@ class MenuState extends FlxState
 
 	override public function create()
 	{
-		login();
+		init();
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
-
-		_buttonWidth = _screenWidth - 160;
-
-		//FlxG.autoPause = true;  I think this breaks the music?
-
-		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
-		_startButton.screenCenter();
-		add(_startButton);
 
 		// === MAIN MENU CONSTRUCTORS ===
 		_newgameButton = new FlxUIButton(_buttonWidth, 0, "New Game", newGame);
@@ -174,20 +168,34 @@ class MenuState extends FlxState
 		super.create();
 	}
 
-	function login(){
+	function init(){
+		_loginButton = new FlxUIButton(0, 0, "Login", () -> {
+			NG.core.requestLogin(()->{
+				_loginStatusText.text = "Logged in!";
+			});
+		});
 		_loginStatusText = new FlxText();
+		_loginStatusText.fieldWidth = FlxG.width;
 		_loginStatusText.text = "Logging in...";
 		add(_loginStatusText);
-		var api_key:String = haxe.Resource.getString("api_key");
+		add(_loginButton);
+
+		var api_key:String = haxe.Resource.getString("api_key"); // passed to the game at compile time via command-line argument and excluded from github.
 		
 		NG.create(api_key);
 		
 		if(!NG.core.loggedIn){
+			_loginButton.visible = true;
 			_loginStatusText.text = "You are not currently logged in to Newgrounds. This is not mandatory, but it excludes you from stuff like high-scores and medals. Click the login button to fix this.";
-			NG.core.requestLogin(()->{
-				_loginStatusText.text = "Logged in!";
-			});
 		}
+
+		_buttonWidth = _screenWidth - 160;
+
+		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
+		_startButton.screenCenter();
+		_loginButton.x = _startButton.x;
+		_loginButton.y = _startButton.y + 20;
+		add(_startButton);
 	}
 
 	// called in a loop
