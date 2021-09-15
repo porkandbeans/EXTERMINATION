@@ -9,6 +9,8 @@
 
 package;
 
+import js.html.FileSystem;
+import haxe.Json;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.FlxBasic;
@@ -18,9 +20,12 @@ import flixel.addons.ui.FlxUIButton;
 import flixel.group.FlxGroup;
 import flixel.system.FlxSound;
 import flixel.util.FlxSave;
+import io.newgrounds.NG;
 
 class MenuState extends FlxState
 {
+	var _loginStatusText:FlxText;
+
 	var _musicVolume:Int;
 	var _gameVolume:Int;
 	var _mainMenu:FlxTypedGroup<FlxUIButton>;
@@ -55,6 +60,7 @@ class MenuState extends FlxState
 
 	override public function create()
 	{
+		login();
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
 
@@ -69,7 +75,7 @@ class MenuState extends FlxState
 		// === MAIN MENU CONSTRUCTORS ===
 		_newgameButton = new FlxUIButton(_buttonWidth, 0, "New Game", newGame);
 		add(_newgameButton);
-
+		
 		_continueButton = new FlxUIButton(_buttonWidth, 60, "Continue", continueGame);
 		add(_continueButton);
 
@@ -166,6 +172,22 @@ class MenuState extends FlxState
 		updateVolumeMus(); updateVolGame();
 
 		super.create();
+	}
+
+	function login(){
+		_loginStatusText = new FlxText();
+		_loginStatusText.text = "Logging in...";
+		add(_loginStatusText);
+		var api_key:String = haxe.Resource.getString("api_key");
+		
+		NG.create(api_key);
+		
+		if(!NG.core.loggedIn){
+			_loginStatusText.text = "You are not currently logged in to Newgrounds. This is not mandatory, but it excludes you from stuff like high-scores and medals. Click the login button to fix this.";
+			NG.core.requestLogin(()->{
+				_loginStatusText.text = "Logged in!";
+			});
+		}
 	}
 
 	// called in a loop
