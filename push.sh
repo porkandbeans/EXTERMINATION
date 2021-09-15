@@ -13,4 +13,4 @@ git add -A
 git commit -m "$CMESG"
 git push
 clear
-echo "Done! screen cleared to protect github key./n"
+echo "Done! screen cleared to protect github key."

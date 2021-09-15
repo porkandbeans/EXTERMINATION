@@ -21,6 +21,10 @@ import pickups.guns.RiflePickup;
 class PlayState extends FlxState
 {
 	// === PRIVATE VARS ===
+	// it has actually just occurred to me that there aren't actually going to be any public vars
+	// because this is where everything happens.
+	// I'm still going to keep the underscore naming convention as I find
+	// it helps to distinguish between the vars that I made and which are inherited
 	var _map:FlxOgmo3Loader;
 	var _tilemap:FlxTilemap;
 	var _player:Player;
