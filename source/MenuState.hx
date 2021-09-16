@@ -10,7 +10,7 @@
 package;
 
 import flixel.math.FlxPoint;
-import js.html.FileSystem;
+//import js.html.FileSystem;
 import haxe.Json;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -34,8 +34,6 @@ class MenuState extends FlxState
 	var _startButton:FlxUIButton;
 	var _newgameButton:FlxUIButton;
 	var _optionsButton:FlxUIButton;
-	var _continueButton:FlxUIButton;
-	var _levelsButton:FlxUIButton;
 
 	var _optionsMenu:FlxGroup;
 	var _optionsCloseButton:FlxUIButton;
@@ -63,30 +61,66 @@ class MenuState extends FlxState
 	override public function create()
 	{
 		init();
+		optionsButtons();
+		initMusic();
+
+		super.create();
+	}
+
+	// called on successful login to Newgrounds
+	function onLoggedIn(){
+		_loginStatusText.text = "Logged in!";
+	}
+
+	// initialize the menu
+	function init(){
+		
+		_loginButton = new FlxUIButton(0, 0, "Login", () -> {
+			NG.core.requestLogin(onLoggedIn);	// login to Newgrounds
+		});
+		
+		_loginStatusText = new FlxText();
+		_loginStatusText.fieldWidth = FlxG.width;
+		_loginStatusText.text = "Logging in...";
+		add(_loginStatusText);
+		add(_loginButton);
+
+		var api_key:String = haxe.Resource.getString("api_key"); // passed to the game at compile time via command-line argument and excluded from github.
+		
+		NG.create(api_key); // instantiate a connection to Newgrounds using the AppID
+		
+		if(!NG.core.loggedIn){
+			_loginButton.visible = true;
+			_loginStatusText.text = "You are not currently logged in to Newgrounds. This is not mandatory, but it excludes you from stuff like high-scores and medals. Click the login button to fix this.";
+		}
+
+		_buttonWidth = _screenWidth - 160;
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
-
-		// === MAIN MENU CONSTRUCTORS ===
-		_newgameButton = new FlxUIButton(_buttonWidth, 0, "New Game", newGame);
-		add(_newgameButton);
 		
-		_continueButton = new FlxUIButton(_buttonWidth, 60, "Continue", continueGame);
-		add(_continueButton);
+		// === MAIN MENU CONSTRUCTORS ===
+		_newgameButton = new FlxUIButton(_screenWidth - 160, 30, "New Game", newGame);
+		add(_newgameButton);
 
-		_levelsButton = new FlxUIButton(_buttonWidth, 120, "Level Select", levelsMenu);
-		add(_levelsButton);
-
-		_optionsButton = new FlxUIButton(_buttonWidth, 180, "Options", optionsMenu);
+		_optionsButton = new FlxUIButton(_screenWidth - 160, 150, "Options", optionsMenu);
 		add(_optionsButton);
 
 		// === MAIN MENU GROUP ===
 		_mainMenu = new FlxTypedGroup<FlxUIButton>();
 		_mainMenu.add(_newgameButton);
-		_mainMenu.add(_continueButton);
-		_mainMenu.add(_levelsButton);
 		_mainMenu.add(_optionsButton);
 		_mainMenu.forEach(loadButtonGraphic);
 
+		
+
+		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
+		_startButton.screenCenter();
+		_loginButton.x = _startButton.x;
+		_loginButton.y = _startButton.y + 20;
+		add(_startButton);
+	}
+
+	function optionsButtons(){
 		// === OPTIONS CONSTRUCTORS ===
 		_optionsCloseButton = new FlxUIButton(64, FlxG.height / 2, "Back", closeOptions);
 		add(_optionsCloseButton);
@@ -140,7 +174,9 @@ class MenuState extends FlxState
 
 		_mainMenu.forEach(hideButton);
 		_optionsMenu.forEach(hideButton);
+	}
 
+	function initMusic(){
 		_menuMusic = FlxG.sound.load("assets/music/menu.mp3", 1, // volume
 			true, // looped
 			null, // group
@@ -164,38 +200,6 @@ class MenuState extends FlxState
 		}
 		
 		updateVolumeMus(); updateVolGame();
-
-		super.create();
-	}
-
-	function init(){
-		_loginButton = new FlxUIButton(0, 0, "Login", () -> {
-			NG.core.requestLogin(()->{
-				_loginStatusText.text = "Logged in!";
-			});
-		});
-		_loginStatusText = new FlxText();
-		_loginStatusText.fieldWidth = FlxG.width;
-		_loginStatusText.text = "Logging in...";
-		add(_loginStatusText);
-		add(_loginButton);
-
-		var api_key:String = haxe.Resource.getString("api_key"); // passed to the game at compile time via command-line argument and excluded from github.
-		
-		NG.create(api_key);
-		
-		if(!NG.core.loggedIn){
-			_loginButton.visible = true;
-			_loginStatusText.text = "You are not currently logged in to Newgrounds. This is not mandatory, but it excludes you from stuff like high-scores and medals. Click the login button to fix this.";
-		}
-
-		_buttonWidth = _screenWidth - 160;
-
-		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
-		_startButton.screenCenter();
-		_loginButton.x = _startButton.x;
-		_loginButton.y = _startButton.y + 20;
-		add(_startButton);
 	}
 
 	// called in a loop
@@ -211,6 +215,8 @@ class MenuState extends FlxState
 	// displays the main menu
 	function clickPlay(){
 		_startButton.visible = false;
+		_loginButton.visible = false;
+		_loginStatusText.visible = false;
 		_mainMenu.forEach(showButton);
 	}
 

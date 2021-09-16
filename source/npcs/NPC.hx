@@ -103,14 +103,15 @@ class NPC extends FlxSprite {
                 }
             }
             
-            switch(_random.int(0, _painSounds.length - 1)){
+            _painSounds[_random.int(0, _painSounds.length - 1)].play(true);
+            /*switch(_random.int(0, _painSounds.length - 1)){
                 case 0:
                     _painSound01.play(true);
                 case 1:
                     _painSound02.play(true);
                 case 2:
                     _painSound03.play(true);
-            }
+            }*/
             
             die();
         }
