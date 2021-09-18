@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxSprite;
 import npcs.NPC;
 import npcs.Ped01;
 import npcs.Cop;
@@ -51,6 +52,9 @@ class PlayState extends FlxState
 		// set the background image
 		_backdrop = new FlxBackdrop("assets/images/Backgrounds/backdrop.png", 0.5, 0.5, true, 0, 0);
 
+		var buildings1:FlxSprite = new FlxSprite(0, 0, "assets/images/Backgrounds/buildings1.png");
+		buildings1.scrollFactor.set(.2, 0);
+		add(buildings1);
 		// load the level data
 		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", "assets/levels/NewLevel0.json");
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");

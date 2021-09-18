@@ -111,8 +111,6 @@ class MenuState extends FlxState
 		_mainMenu.add(_optionsButton);
 		_mainMenu.forEach(loadButtonGraphic);
 
-		
-
 		_startButton = new FlxUIButton(0, 0, "begin", clickPlay);
 		_startButton.screenCenter();
 		_loginButton.x = _startButton.x;
