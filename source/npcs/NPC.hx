@@ -7,6 +7,11 @@ import flixel.math.FlxRandom;
 import flixel.system.FlxSound;
 import flixel.FlxSprite;
 
+enum State{ // gonna declare this new state enum so I can tell the code when the NPC is supposed to be idle, and if it's not idle it will have behaviour to follow in child classes
+    IDLE;
+    TRIGGERED;
+}
+
 class NPC extends FlxSprite {
     var _random:FlxRandom;
     var _painSound01:FlxSound;
@@ -18,11 +23,13 @@ class NPC extends FlxSprite {
     var _canJump:Bool;
     var _weight:Float = 300;
     var _touchingFloor:Bool; // debugging only
-
+    var _state(default, null):State;
 
     public function new(x:Float = 0, y:Float = 0)
     {
         super(x, y);
+
+        _state = IDLE;
 
         _newAction = true;
         _canJump = true;
@@ -39,12 +46,20 @@ class NPC extends FlxSprite {
         physics();
         
         if(alive){
-            decideAction();
-            doAction();
-        }
-
+            if(_state == IDLE){
+                decideAction();
+                doAction();
+            }else if(_state == TRIGGERED){
+                triggered();
+            }
+        }   
         _touchingFloor = isTouching(FlxObject.FLOOR);
         super.update(elapsed);
+    }
+
+    function triggered(){
+        //override this in child classes
+        // peds are gonna run away, cops are gonna shoot the player
     }
 
     function physics(){
