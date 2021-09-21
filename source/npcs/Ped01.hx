@@ -62,4 +62,9 @@ class Ped01 extends NPC{
             }
         }
     }
+
+    override function triggered() {
+        // run away, scream, piss your pants maybe shit and cum
+        super.triggered();
+    }
 }

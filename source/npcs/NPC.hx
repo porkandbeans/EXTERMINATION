@@ -1,5 +1,6 @@
 package npcs;
 
+import flixel.tile.FlxTilemap;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
@@ -57,27 +58,55 @@ class NPC extends FlxSprite {
         super.update(elapsed);
     }
 
-    function triggered(){
-        //override this in child classes
-        // peds are gonna run away, cops are gonna shoot the player
+    /**
+    * Casts a ray to look for the player and sets _state to TRIGGERED if so.
+    *   
+    * @param  walls    the flxtilemap data of the current level
+    *
+    * @param  player   the player class that handles all the interactive stuff
+    */
+    public function lookForPlayer(walls:FlxTilemap, player:Player){
+        if(walls.ray(this.getMidpoint(), player.getMidpoint())){
+            _state = TRIGGERED;
+        }else{
+            _state = IDLE;
+        }
     }
 
+    /**
+        to be overriden by child classes
+    **/
+    function triggered(){
+        acceleration.x = 0;
+        animation.play("idle");
+    }
+
+    /**
+        applies gravity
+    **/
     function physics(){
         acceleration.y = _weight;
     }
 
+    /**
+        Use random integer math and a timer to decide which direction to move in, or to move at all.
+    **/
     function decideAction(){
         if(_newAction){
             _newAction = false;
-            new FlxTimer().start(_random.float(0,3), newAction, 1); // random float between 0 and 3 amount of seconds before choosing next action to take
+            new FlxTimer().start(_random.float(0,3), _->{_newAction = true;}, 1); // random float between 0 and 3 amount of seconds before choosing next action to take
             _currentAction = _random.int(0,2);
         }
     }
 
+    /*
     function newAction(timer:FlxTimer){
         _newAction = true;
-    }
+    }*/
 
+    /**
+        After deciding what to do, do the thing you have decided to do.
+    **/
     function doAction(){
         switch(_currentAction){
             case 0:
@@ -107,6 +136,9 @@ class NPC extends FlxSprite {
         velocity.y = -100;
     }
 
+    /**
+        handles animation logic for when an NPC dies. "Stabbed" is out of date, probably due for a refactor. But I'm lazy.
+    **/
     public function getStabbed(){
         if(health > 0){
             animation.play("stabbed");
@@ -132,6 +164,9 @@ class NPC extends FlxSprite {
         }
     }
 
+    /**
+        called at the end of getStabbed()
+    **/
     function die(){
         alive = false;
         acceleration.x = 0;
@@ -140,13 +175,16 @@ class NPC extends FlxSprite {
         new FlxTimer().start(3, finalDeath);
     }
 
+    /**
+        callback for a FlxTimer to remove the object from the game permanently.
+    **/
     function finalDeath(obj:FlxTimer){
         kill();// 死ね
 
         //TODO: fade-out animation maybe?
     }
 
-    /*
+    /**
         Whenever a new NPC type is being declared, this function should be called
         kinda towards the end of new(). Basically it assigns the hitbox, the volumes,
         animations, all the stuff that NPCs should just globally have.

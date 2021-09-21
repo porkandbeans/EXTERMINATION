@@ -8,4 +8,9 @@ class Cop extends NPC{
         
         init();
     }
+
+    override public function triggered(){
+        // stand still and shoot at the player's direction
+        super.triggered();
+    }
 }

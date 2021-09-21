@@ -31,8 +31,6 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
-	var _npcs:FlxTypedGroup<Ped01>;
-	var _cops:FlxTypedGroup<Cop>;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
 
@@ -46,6 +44,8 @@ class PlayState extends FlxState
 	var _objects:FlxGroup;
 	var _pickups:FlxGroup;
 	var _bullets:FlxGroup;
+	var _peds:FlxTypedGroup<Ped01>;
+	var _cops:FlxTypedGroup<Cop>;
 
 	override public function create()
 	{
@@ -65,7 +65,7 @@ class PlayState extends FlxState
 		_tilemap.setTileProperties(2, FlxObject.ANY);
 
 		// === ACTORS ===
-		_npcs = new FlxTypedGroup<Ped01>();
+		_peds = new FlxTypedGroup<Ped01>();
 		_cops = new FlxTypedGroup<Cop>();
 		_player = new Player();
 
@@ -91,7 +91,7 @@ class PlayState extends FlxState
 		_objects.add(_pistolBullets);
 		_objects.add(_rifleBullets);
 		_objects.add(_tilemap);
-		_objects.add(_npcs);
+		_objects.add(_peds);
 		_objects.add(_cops);
 
 		// === PICKUPS GROUP ===
@@ -110,7 +110,7 @@ class PlayState extends FlxState
 		var _addthese = new Array<FlxBasic>();
 		
 		_addthese = [
-			_backdrop, _tilemap, _npcs, _cops, _player, _pistolBullets,
+			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets,
 			_rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols,
 			_player.hitreg
 		];
@@ -129,7 +129,7 @@ class PlayState extends FlxState
 			case "player":
 				_player.setPosition(entity.x, entity.y);
 			case "NPC":
-				_npcs.add(new Ped01(entity.x - 16, entity.y - 16));
+				_peds.add(new Ped01(entity.x - 16, entity.y - 16));
 			case "cop":
 				_cops.add(new Cop(entity.x - 16, entity.y - 16));
 			case "pistolammo":
@@ -147,11 +147,15 @@ class PlayState extends FlxState
 	{
 		collisions();
 		pauseListen();
+		_peds.forEach(checkNPCvision);
+		_cops.forEach(checkNPCvision);
 		FlxG.camera.follow(_player, PLATFORMER, 1);
 		super.update(elapsed);
 	}
 
-	// === PAUSE THE GAME ===
+	/**
+		Listens for key input to pause the game.
+	**/
 	function pauseListen(){
 		if(FlxG.keys.justPressed.P){
 			_objects.forEach((obj:FlxBasic) -> {
@@ -160,13 +164,19 @@ class PlayState extends FlxState
 			_hud.pauseGame();
 		}
 	}
+
+	// === CHECK NPC VISION FOR PLAYER ===
+	function checkNPCvision(npc:NPC){
+		npc.lookForPlayer(_tilemap, _player);
+	}
+
 	function collisions()
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
-		FlxG.overlap(_npcs, _player.hitreg, npcStab);
-		FlxG.overlap(_npcs, _rifleBullets, riflenpcShot); // check for rifle shots first
+		FlxG.overlap(_peds, _player.hitreg, npcStab);
+		FlxG.overlap(_peds, _rifleBullets, riflenpcShot); // check for rifle shots first
 		FlxG.overlap(_cops, _rifleBullets, riflenpcShot); // as the pistol bullets will override
-		FlxG.overlap(_npcs, _bullets, npcShot);
+		FlxG.overlap(_peds, _bullets, npcShot);
 		FlxG.overlap(_cops, _bullets, npcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
 	}
@@ -195,6 +205,9 @@ class PlayState extends FlxState
 		}
 	}
 
+	/**
+		kills (destroys) bullets when they collide with walls
+	**/
 	function bulletWall(obj1:FlxObject, tmap:FlxTilemap)
 	{
 		// specifically kills bullets on impact with world boundaries
@@ -207,9 +220,16 @@ class PlayState extends FlxState
 		}
 	}
 
+	/**
+		Pick up an item.
+		@param	player	Should be obvious
+		@param	item	The item the player will collect
+	**/
 	function pickupItem(player:Player, item:Pickup)
 	{
 		item.get(player);
 		player.updateHUD();
 	}
+
+
 }
