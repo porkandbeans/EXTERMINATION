@@ -1,5 +1,6 @@
 package npcs;
 
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -25,6 +26,8 @@ class NPC extends FlxSprite {
     var _weight:Float = 300;
     var _touchingFloor:Bool; // debugging only
     var _state(default, null):State;
+    var _playerPos:FlxPoint;
+    var _walkSpeed = 60;
 
     public function new(x:Float = 0, y:Float = 0)
     {
@@ -50,6 +53,8 @@ class NPC extends FlxSprite {
             if(_state == IDLE){
                 decideAction();
                 doAction();
+            }else if(_state == TRIGGERED){
+                triggered();
             }
         }   
         _touchingFloor = isTouching(FlxObject.FLOOR);
@@ -64,19 +69,22 @@ class NPC extends FlxSprite {
     * @param  player   the player class that handles all the interactive stuff
     */
     public function lookForPlayer(walls:FlxTilemap, player:Player){
-        if(walls.ray(this.getMidpoint(), player.getMidpoint())){
+        _playerPos = player.getMidpoint(); // grab this while I'm here
+
+        if(walls.ray(this.getMidpoint(), _playerPos)){
             _state = TRIGGERED;
+            _walkSpeed = 120;
         }else{
             _state = IDLE;
+            _walkSpeed = 60;
         }
     }
 
     /**
         to be overriden by child classes
     **/
-    public function triggered(player:Player){
-        acceleration.x = 0;
-        animation.play("idle");
+    public function triggered(){
+        
     }
 
     /**
@@ -108,25 +116,33 @@ class NPC extends FlxSprite {
     function doAction(){
         switch(_currentAction){
             case 0:
-                animation.play("walk");
-                acceleration.x = -60; // walk left
-                flipX = true;
-                if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
-                    jump();
-                }
+                walkLeft();
                 return;
             case 1:
-                animation.play("walk");
-                acceleration.x = 60; // walk right 
-                flipX = false;
-                if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
-                    jump();
-                }
+                walkRight();
                 return;
             case 2:
                 acceleration.x = 0;
                 animation.play("idle");
                 return; // stand still for a bit
+        }
+    }
+
+    function walkLeft(){
+        animation.play("walk");
+        acceleration.x = -_walkSpeed; // walk left
+        flipX = true;
+        if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
+            jump();
+        }
+    }
+
+    function walkRight(){
+        animation.play("walk");
+        acceleration.x = _walkSpeed; // walk right 
+        flipX = false;
+        if(isTouching(FlxObject.WALL) && isTouching(FlxObject.FLOOR)){
+            jump();
         }
     }
 
