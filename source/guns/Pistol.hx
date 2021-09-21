@@ -31,4 +31,8 @@ class Pistol extends Gun{
     function doneShooting(timer:FlxTimer){
         _canShoot = true;
     }
+
+    public function initBullets(bulls:Int){
+        _bullets = new FlxTypedGroup<Bullet>(bulls);
+    }
 }

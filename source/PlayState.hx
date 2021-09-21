@@ -69,11 +69,11 @@ class PlayState extends FlxState
 		_cops = new FlxTypedGroup<Cop>();
 		_player = new Player();
 
-		// === PICKUP DECLARATIONS ===
+		// === GUN STUFF ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
 
-		// === GUN STUFF ===
+		// === PICKUP DECLARATIONS ===
 		_player.declareBullets(_pistolBullets, _rifleBullets); // the player needs these for his weapon classes
 		_pistolAmmo = new FlxTypedGroup<PistolAmmo>();
 		_rifleAmmo = new FlxTypedGroup<RifleAmmo>();
