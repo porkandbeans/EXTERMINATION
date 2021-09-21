@@ -63,8 +63,8 @@ class Ped01 extends NPC{
         }
     }
 
-    override function triggered() {
+    override public function triggered(player:Player) {
         // run away, scream, piss your pants maybe shit and cum
-        super.triggered();
+        super.triggered(player);
     }
 }

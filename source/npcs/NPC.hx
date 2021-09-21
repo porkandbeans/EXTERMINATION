@@ -50,8 +50,6 @@ class NPC extends FlxSprite {
             if(_state == IDLE){
                 decideAction();
                 doAction();
-            }else if(_state == TRIGGERED){
-                triggered();
             }
         }   
         _touchingFloor = isTouching(FlxObject.FLOOR);
@@ -76,7 +74,7 @@ class NPC extends FlxSprite {
     /**
         to be overriden by child classes
     **/
-    function triggered(){
+    public function triggered(player:Player){
         acceleration.x = 0;
         animation.play("idle");
     }
