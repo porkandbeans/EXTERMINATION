@@ -10,9 +10,9 @@ class Bullet extends FlxSprite{
         loadGraphic("assets/images/misc/bullet.png", false, 4, 4);
     }
 
-    public function shoot(x:Float, y:Float, v:Float){
-        super.x = x;
-        super.y = y;
-        velocity.x = v;
+    public function shoot(_x:Float, _y:Float, _v:Float){
+        super.x = _x;
+        super.y = _y;
+        velocity.x = _v;
     }
 }

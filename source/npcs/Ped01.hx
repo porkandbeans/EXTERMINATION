@@ -62,4 +62,16 @@ class Ped01 extends NPC{
             }
         }
     }
+
+    override public function triggered() {
+        if(_playerPos.x > x){ // if the player is to my right
+            walkLeft();
+        }else{
+            walkRight();
+        }
+        // this means if they share the same FlxPoint, then they're going to favour walkRight(), but I think that's such a small
+        // niche little circumstance that it barely matters.
+        // besides, it'd be nice if people playing the game actually notice that I think.
+        super.triggered();
+    }
 }
