@@ -1,18 +1,18 @@
 package;
 
-import flixel.FlxSprite;
-import npcs.NPC;
-import npcs.Ped01;
-import npcs.Cop;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
+import npcs.Cop;
+import npcs.NPC;
+import npcs.Ped01;
 import pickups.Pickup;
 import pickups.ammo.PistolAmmo;
 import pickups.ammo.RifleAmmo;
@@ -108,16 +108,18 @@ class PlayState extends FlxState
 
 		_map.loadEntities(placeEntities, "entities");
 		var _addthese = new Array<FlxBasic>();
-		
+
 		_addthese = [
-			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets,
-			_rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols,
-			_player.hitreg
+			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets, _rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols, _player.hitreg
 		];
 
-		for(item in _addthese){
+		for (item in _addthese)
+		{
 			add(item);
 		}
+
+		// === ENEMY BULLETS ===
+		_cops.forEach(loadMags);
 
 		super.create();
 	}
@@ -156,9 +158,12 @@ class PlayState extends FlxState
 	/**
 		Listens for key input to pause the game.
 	**/
-	function pauseListen(){
-		if(FlxG.keys.justPressed.P){
-			_objects.forEach((obj:FlxBasic) -> {
+	function pauseListen()
+	{
+		if (FlxG.keys.justPressed.P)
+		{
+			_objects.forEach((obj:FlxBasic) ->
+			{
 				obj.active = !obj.active;
 			});
 			_hud.pauseGame();
@@ -166,7 +171,8 @@ class PlayState extends FlxState
 	}
 
 	// === CHECK NPC VISION FOR PLAYER ===
-	function checkNPCvision(npc:NPC){
+	function checkNPCvision(npc:NPC)
+	{
 		npc.lookForPlayer(_tilemap, _player);
 	}
 
@@ -174,6 +180,7 @@ class PlayState extends FlxState
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
 		FlxG.overlap(_peds, _player.hitreg, npcStab);
+		FlxG.overlap(_cops, _player.hitreg, npcStab);
 		FlxG.overlap(_peds, _rifleBullets, riflenpcShot); // check for rifle shots first
 		FlxG.overlap(_cops, _rifleBullets, riflenpcShot); // as the pistol bullets will override
 		FlxG.overlap(_peds, _bullets, npcShot);
@@ -191,8 +198,9 @@ class PlayState extends FlxState
 		}
 	}
 
-	function npcStab(sprite1:NPC, sprite2:FlxObject){
-		sprite2.active?sprite1.getStabbed():return;
+	function npcStab(sprite1:NPC, sprite2:FlxObject)
+	{
+		sprite2.active ? sprite1.getStabbed() : return;
 	}
 
 	// unique callback for penetrating shots
@@ -214,8 +222,10 @@ class PlayState extends FlxState
 		obj1.kill();
 	}
 
-	function objectCollide(obj1:FlxObject, tmap:FlxTilemap){
-		if((obj1 is Bullet)){
+	function objectCollide(obj1:FlxObject, tmap:FlxTilemap)
+	{
+		if ((obj1 is Bullet))
+		{
 			obj1.kill();
 		}
 	}
@@ -231,5 +241,14 @@ class PlayState extends FlxState
 		player.updateHUD();
 	}
 
-
+	/**
+		declares new FlxTypedGroup<Bullet> for each cop in the playstate, then passes the group to the cop's Pistol class.
+	**/
+	function loadMags(cop:Cop)
+	{
+		var copBullets:FlxTypedGroup<Bullet> = new FlxTypedGroup<Bullet>(5);
+		cop.initPistol(copBullets);
+		add(copBullets);
+		_objects.add(copBullets);
+	}
 }
