@@ -8,6 +8,7 @@ import openfl.display.Sprite;
 
 @:bitmap("assets/images/ui/tankman.png") class LogoImage extends BitmapData {}
 @:bitmap("assets/images/ui/preloaderbg.png") class BgImage extends BitmapData {}
+@:bitmap("assets/images/ui/loading.png") class LoadingTxt extends BitmapData {}
 
 class BGsprite extends Sprite
 {
@@ -24,7 +25,7 @@ class BGsprite extends Sprite
 		addChild(img);
 	}
 
-	public function offset(_x:Float, _y:Float)
+	public function offset()
 	{
 		img.x -= 1280;
 		img.y -= 1280;
@@ -40,6 +41,7 @@ class NewgroundsPreloader extends FlxBasePreloader
 
 	var logo:Sprite;
 	var _bg:BGsprite;
+	var loading:Sprite;
 
 	override public function create()
 	{
@@ -55,12 +57,16 @@ class NewgroundsPreloader extends FlxBasePreloader
 
 		_bg = new BGsprite();
 		_bg.img.scaleX = _bg.img.scaleY = ratio * 2;
-		_bg.offset(this._width, this._height);
+		_bg.offset();
 		_bg.x = 640;
 		_bg.y = 640;
 
+		loading = new Sprite();
+		loading.addChild(new Bitmap(new LoadingTxt(0, 0)));
+
 		addChild(_bg);
 		addChild(logo);
+		addChild(loading);
 	}
 
 	override public function update(elapsed:Float)
