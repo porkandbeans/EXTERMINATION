@@ -26,8 +26,8 @@ class BGsprite extends Sprite
 
 	public function offset(_x:Float, _y:Float)
 	{
-		img.x -= 640;
-		img.y -= 640;
+		img.x -= 1280;
+		img.y -= 1280;
 	}
 }
 
@@ -47,32 +47,19 @@ class NewgroundsPreloader extends FlxBasePreloader
 		this._width = Lib.current.stage.stageWidth;
 		this._height = Lib.current.stage.stageHeight;
 
-		var ratio:Float = this._width / 1280; // This allows us to scale assets depending on the size of the screen.
+		var ratio:Float = this._width / 1280;
 
 		logo = new Sprite();
 		logo.addChild(new Bitmap(new LogoImage(0, 0)));
 		logo.scaleX = logo.scaleY = ratio;
 
 		_bg = new BGsprite();
-		_bg.img.scaleX = _bg.img.scaleY = ratio;
+		_bg.img.scaleX = _bg.img.scaleY = ratio * 2;
 		_bg.offset(this._width, this._height);
 		_bg.x = 640;
 		_bg.y = 640;
-		// _bg.x = (this._width / 2) - (_bg.img.width / 2);
-		// _bg.y = (this._height / 2) - (_bg.img.height / 2);
-
-		// logo.x = ((this._width) / 2) - ((logo.width) / 2);
-		// logo.y = (this._height / 2) - ((logo.height) / 2);
-
-		/*Font.registerFont(NGfont);
-			text = new TextField();
-			text.defaultTextFormat = new TextFormat("TekutekuAL", Std.int(24 * ratio), 0xffffff, false, false, false, "", "", TextFormatAlign.CENTER);
-			text.text = "Loading...";
-			addChild(text); */
 
 		addChild(_bg);
-		// addChild(_bg.img);
-
 		addChild(logo);
 	}
 
