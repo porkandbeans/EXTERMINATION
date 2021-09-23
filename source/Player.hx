@@ -13,9 +13,6 @@ import guns.Rifle;
 
 class Player extends FlxSprite
 {
-	/**
-		write game over code
-	**/
 	// === PRIVATE VARS ===
 	var _jumpForce:Float = 80;
 
