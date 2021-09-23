@@ -32,12 +32,7 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
-<<<<<<< HEAD
-	var _pistolBullets:FlxTypedGroup<Bullet>;
-	var _rifleBullets:FlxTypedGroup<Bullet>;
 	var _levelPath:String;
-=======
->>>>>>> d796c12a2e85b10f3c2641cfd08e64eed8424531
 
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
