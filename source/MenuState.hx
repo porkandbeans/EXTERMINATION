@@ -9,19 +9,19 @@
 
 package;
 
-import flixel.math.FlxPoint;
-//import js.html.FileSystem;
-import haxe.Json;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.ui.FlxUIButton;
 import flixel.group.FlxGroup;
+import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.util.FlxSave;
+import haxe.Json;
 import io.newgrounds.NG;
+// import js.html.FileSystem;
 
 class MenuState extends FlxState
 {
@@ -222,7 +222,7 @@ class MenuState extends FlxState
 	function newGame(){
 		save.close();
 		FlxG.sound.music.pause();
-		FlxG.switchState(new PlayState());
+		FlxG.switchState(new PlayState("assets/levels/NewLevel1.json"));
 	}
 
 	// hides main menu and displays the options menu

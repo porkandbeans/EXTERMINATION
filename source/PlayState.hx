@@ -33,6 +33,7 @@ class PlayState extends FlxState
 	var _backdrop:FlxBackdrop;
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
+	var _levelPath:String;
 
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
@@ -47,6 +48,12 @@ class PlayState extends FlxState
 	var _peds:FlxTypedGroup<Ped01>;
 	var _cops:FlxTypedGroup<Cop>;
 
+	public function new(dirpath:String)
+	{
+		super();
+		_levelPath = dirpath;
+	}
+
 	override public function create()
 	{
 		// set the background image
@@ -56,7 +63,7 @@ class PlayState extends FlxState
 		buildings1.scrollFactor.set(.2, 0);
 		add(buildings1);
 		// load the level data
-		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", "assets/levels/NewLevel0.json");
+		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", _levelPath);
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");
 		_tilemap.follow();
 
