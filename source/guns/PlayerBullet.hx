@@ -1,10 +1,9 @@
 package guns;
 
-class CopBullet extends Bullet
+class PlayerBullet extends Bullet
 {
 	override public function new()
 	{
-		setDmg(2);
-		super(1);
+		super(0);
 	}
 }

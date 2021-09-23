@@ -438,6 +438,12 @@ class Player extends FlxSprite
 		_heldWeapons = _heldWeapons.concat([1]);
 		hasPistol = true;
 	}
+
+	public function takeDmg(dmg:Float)
+	{
+		health -= dmg;
+		hud.updateBar(health);
+	}
 }
 /* TODO
 
