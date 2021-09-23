@@ -10,6 +10,7 @@ import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
+import guns.CopBullet;
 import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
@@ -31,9 +32,12 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
+<<<<<<< HEAD
 	var _pistolBullets:FlxTypedGroup<Bullet>;
 	var _rifleBullets:FlxTypedGroup<Bullet>;
 	var _levelPath:String;
+=======
+>>>>>>> d796c12a2e85b10f3c2641cfd08e64eed8424531
 
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
@@ -45,8 +49,13 @@ class PlayState extends FlxState
 	var _objects:FlxGroup;
 	var _pickups:FlxGroup;
 	var _bullets:FlxGroup;
+	var _copBullets:FlxGroup;
+
+	// specific groups
 	var _peds:FlxTypedGroup<Ped01>;
 	var _cops:FlxTypedGroup<Cop>;
+	var _pistolBullets:FlxTypedGroup<Bullet>;
+	var _rifleBullets:FlxTypedGroup<Bullet>;
 
 	public function new(dirpath:String)
 	{
@@ -110,6 +119,7 @@ class PlayState extends FlxState
 
 		// === BULLETS GROUP ===
 		_bullets = new FlxGroup();
+		_copBullets = new FlxGroup();
 		_bullets.add(_pistolBullets);
 		_bullets.add(_rifleBullets);
 
@@ -126,7 +136,7 @@ class PlayState extends FlxState
 		}
 
 		// === ENEMY BULLETS ===
-		_cops.forEach(loadMags);
+		_cops.forEach(loadMags); // always after _copBullets = new...
 
 		super.create();
 	}
@@ -193,6 +203,7 @@ class PlayState extends FlxState
 		FlxG.overlap(_peds, _bullets, npcShot);
 		FlxG.overlap(_cops, _bullets, npcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
+		FlxG.overlap(_copBullets, _player, playerShot);
 	}
 
 	// callback when NPCs are shot
@@ -249,13 +260,19 @@ class PlayState extends FlxState
 	}
 
 	/**
-		declares new FlxTypedGroup<Bullet> for each cop in the playstate, then passes the group to the cop's Pistol class.
+		declares new FlxTypedGroup<CopBullet> for each cop in the playstate, then passes the group to the cop's Pistol class.
 	**/
 	function loadMags(cop:Cop)
 	{
-		var copBullets:FlxTypedGroup<Bullet> = new FlxTypedGroup<Bullet>(5);
+		var copBullets:FlxTypedGroup<CopBullet> = new FlxTypedGroup<CopBullet>(5);
 		cop.initPistol(copBullets);
 		add(copBullets);
 		_objects.add(copBullets);
+		_copBullets.add(copBullets);
+	}
+
+	function playerShot(bull:CopBullet, player:Player)
+	{
+		bull.hurtPlayer(player);
 	}
 }

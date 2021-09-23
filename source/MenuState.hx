@@ -5,7 +5,10 @@
 
 	the menus themselves are all here in one FlxState. They are simply a bunch of different buttons
 	grouped together into FlxGroups, which I then hide/display as needed.
-*/
+
+	TODO: Options menu is broken
+
+ */
 
 package;
 
@@ -23,6 +26,7 @@ import haxe.Json;
 import io.newgrounds.NG;
 // import js.html.FileSystem;
 
+// import js.html.FileSystem;
 class MenuState extends FlxState
 {
 	var _loginStatusText:FlxText;
@@ -68,17 +72,19 @@ class MenuState extends FlxState
 	}
 
 	// called on successful login to Newgrounds
-	function onLoggedIn(){
+	function onLoggedIn()
+	{
 		_loginStatusText.text = "Logged in!";
 	}
 
 	// initialize the menu
-	function init(){
-		
-		_loginButton = new FlxUIButton(0, 0, "Login", () -> {
-			NG.core.requestLogin(onLoggedIn);	// login to Newgrounds
+	function init()
+	{
+		_loginButton = new FlxUIButton(0, 0, "Login", () ->
+		{
+			NG.core.requestLogin(onLoggedIn); // login to Newgrounds
 		});
-		
+
 		_loginStatusText = new FlxText();
 		_loginStatusText.fieldWidth = FlxG.width;
 		_loginStatusText.text = "Logging in...";
@@ -86,10 +92,11 @@ class MenuState extends FlxState
 		add(_loginButton);
 
 		var api_key:String = haxe.Resource.getString("api_key"); // passed to the game at compile time via command-line argument and excluded from github.
-		
+
 		NG.create(api_key); // instantiate a connection to Newgrounds using the AppID
-		
-		if(!NG.core.loggedIn){
+
+		if (!NG.core.loggedIn)
+		{
 			_loginButton.visible = true;
 			_loginStatusText.text = "You are not currently logged in to Newgrounds. This is not mandatory, but it excludes you from stuff like high-scores and medals. Click the login button to fix this.";
 		}
@@ -97,7 +104,7 @@ class MenuState extends FlxState
 		_buttonWidth = _screenWidth - 160;
 		_screenWidth = FlxG.width;
 		_screenHeight = FlxG.height;
-		
+
 		// === MAIN MENU CONSTRUCTORS ===
 		_newgameButton = new FlxUIButton(_screenWidth - 160, 30, "New Game", newGame);
 		add(_newgameButton);
@@ -118,36 +125,40 @@ class MenuState extends FlxState
 		add(_startButton);
 	}
 
-	function optionsButtons(){
+	function optionsButtons()
+	{
 		// === OPTIONS CONSTRUCTORS ===
+
+		var tempWidth = FlxG.width - 100;
+
 		_optionsCloseButton = new FlxUIButton(64, FlxG.height / 2, "Back", closeOptions);
 		add(_optionsCloseButton);
 
-		_volUpButton = new FlxUIButton(_buttonWidth, 90, '+', volumeUp);
+		_volUpButton = new FlxUIButton(tempWidth, 90, '+', volumeUp);
 		add(_volUpButton);
 
-		_volDownButton = new FlxUIButton(_buttonWidth - 32, 90, '-', volumeDown);
+		_volDownButton = new FlxUIButton(tempWidth - 32, 90, '-', volumeDown);
 		add(_volDownButton);
 
-		_fullscreenButton = new FlxUIButton(_buttonWidth - 46, 180, "Fullscreen", fullscreenToggle);
+		_fullscreenButton = new FlxUIButton(tempWidth - 46, 180, "Fullscreen", fullscreenToggle);
 		add(_fullscreenButton);
 
-		_gameVolUp = new FlxUIButton(_buttonWidth, 122, '+', gameVolUp);
+		_gameVolUp = new FlxUIButton(tempWidth, 122, '+', gameVolUp);
 		add(_gameVolUp);
 
-		_gameVolDown = new FlxUIButton(_buttonWidth - 32, 122, '-', gameVolDown);
+		_gameVolDown = new FlxUIButton(tempWidth - 32, 122, '-', gameVolDown);
 		add(_gameVolDown);
 
 		_musVolumeText = new FlxText(_volUpButton.x - 200, _volUpButton.y + 8, 128, "Music volume", 12);
 		add(_musVolumeText);
 
-		_musVolumeDisp = new FlxText(_musVolumeText.x + 128, _musVolumeText.y, 64, "oops!", 12);
+		_musVolumeDisp = new FlxText(_musVolumeText.x + 128, _musVolumeText.y, 64, "Error", 12);
 		add(_musVolumeDisp);
 
 		_gVolumeText = new FlxText(_gameVolUp.x - 200, _gameVolUp.y + 8, 128, "Master volume", 12);
 		add(_gVolumeText);
 
-		_gVolumeDisp = new FlxText(_gVolumeText.x + 128, _gVolumeText.y, 64, "oops!", 12);
+		_gVolumeDisp = new FlxText(_gVolumeText.x + 128, _gVolumeText.y, 64, "Error", 12);
 		add(_gVolumeDisp);
 
 		// === OPTIONS MENU GROUP ===
@@ -174,7 +185,8 @@ class MenuState extends FlxState
 		_optionsMenu.forEach(hideButton);
 	}
 
-	function initMusic(){
+	function initMusic()
+	{
 		_menuMusic = FlxG.sound.load("assets/music/menu.mp3", 1, // volume
 			true, // looped
 			null, // group
@@ -189,29 +201,35 @@ class MenuState extends FlxState
 		save.bind("exterminationVolumes");
 
 		// LOAD STUFF FROM SAVED DATA
-		if(save.data.musicVolume != null){
+		if (save.data.musicVolume != null)
+		{
 			FlxG.sound.music.volume = save.data.musicVolume;
 		}
 
-		if(save.data.gameVolume != null){
+		if (save.data.gameVolume != null)
+		{
 			FlxG.sound.volume = save.data.gameVolume;
 		}
-		
-		updateVolumeMus(); updateVolGame();
+
+		updateVolumeMus();
+		updateVolGame();
 	}
 
 	// called in a loop
-	function hideButton(button:FlxBasic){
+	function hideButton(button:FlxBasic)
+	{
 		button.visible = false;
 	}
 
 	// called in a loop
-	function showButton(button:FlxBasic){
+	function showButton(button:FlxBasic)
+	{
 		button.visible = true;
 	}
 
 	// displays the main menu
-	function clickPlay(){
+	function clickPlay()
+	{
 		_startButton.visible = false;
 		_loginButton.visible = false;
 		_loginStatusText.visible = false;
@@ -219,85 +237,98 @@ class MenuState extends FlxState
 	}
 
 	// switches to PlayState.hx
-	function newGame(){
+	function newGame()
+	{
 		save.close();
 		FlxG.sound.music.pause();
 		FlxG.switchState(new PlayState("assets/levels/NewLevel1.json"));
 	}
 
 	// hides main menu and displays the options menu
-	function optionsMenu(){
+	function optionsMenu()
+	{
 		_mainMenu.forEach(hideButton);
 		_optionsMenu.forEach(showButton);
 	}
 
 	// hides options menu and displays the main menu
-	function closeOptions(){
+	function closeOptions()
+	{
 		_optionsMenu.forEach(hideButton);
 		_mainMenu.forEach(showButton);
 	}
 
-	function continueGame(){
+	function continueGame()
+	{
 		// this doesn't do anything right now
 	}
 
-	function levelsMenu(){
+	function levelsMenu()
+	{
 		// this doesn't do anything right now
 	}
 
-	function volumeUp(){
+	function volumeUp()
+	{
 		FlxG.sound.music.volume += 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
 		updateVolumeMus();
 	}
 
-	function volumeDown(){
+	function volumeDown()
+	{
 		FlxG.sound.music.volume -= 0.1;
 		save.data.musicVolume = FlxG.sound.music.volume;
 		updateVolumeMus();
 	}
 
 	// assigns the graphic to use for the main menu buttons
-	function loadButtonGraphic(button:FlxUIButton){
-		//button.loadGraphic("assets/images/ui/bloodbutton.png");
+	function loadButtonGraphic(button:FlxUIButton)
+	{
+		// button.loadGraphic("assets/images/ui/bloodbutton.png");
 		button.loadGraphicsUpOverDown("assets/images/ui/bloodFrames.png");
 		button.label.offset.set(25, -25);
 		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
 	}
 
 	// loads the graphics for the + and - buttons in the options menu
-	function loadSmallGraphics(button:FlxUIButton){
-		//button.setGraphicSize(32,32);
+	function loadSmallGraphics(button:FlxUIButton)
+	{
+		// button.setGraphicSize(32,32);
 		button.loadGraphicsUpOverDown("assets/images/ui/buttonframes.png");
-		//button.loadGraphic("assets/images/ui/buttonSmall.png");
+		// button.loadGraphic("assets/images/ui/buttonSmall.png");
 		button.label.offset.set(0, -6);
 		button.label.color = FlxColor.WHITE; // vscode says this doesn't do anything and grays it, but it works.
 	}
 
-	function fullscreenToggle(){
+	function fullscreenToggle()
+	{
 		FlxG.fullscreen = !FlxG.fullscreen;
-		FlxG.fullscreen ? _fullscreenButton.label.text="Fullscreen't" : _fullscreenButton.label.text="Fullscreen";
+		FlxG.fullscreen ? _fullscreenButton.label.text = "Fullscreen't" : _fullscreenButton.label.text = "Fullscreen";
 	}
 
-	function gameVolUp(){
+	function gameVolUp()
+	{
 		FlxG.sound.volume += 0.1;
 		save.data.gameVolume = FlxG.sound.volume;
 		updateVolGame();
 	}
 
-	function gameVolDown(){
+	function gameVolDown()
+	{
 		FlxG.sound.volume -= 0.1;
 		save.data.gameVolume = FlxG.sound.volume;
 		updateVolGame();
 	}
 
-
 	// these two functions grab the value of FlxG.sound's music and global volumes, then round their floating points away and multiply their values by 100 so you get 10%, 20%, etc
-	function updateVolumeMus(){
+	function updateVolumeMus()
+	{
 		_musVolumeDisp.text = Math.round(FlxG.sound.music.volume * 100) + '%';
 	}
 
-	function updateVolGame(){
+	function updateVolGame()
+	{
 		_gVolumeDisp.text = Math.round(FlxG.sound.volume * 100) + '%';
 	}
 }
