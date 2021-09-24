@@ -5,28 +5,19 @@ import flixel.util.FlxTimer;
 
 class Pistol extends Gun
 {
-	var _bullets:FlxTypedGroup<PlayerBullet>;
-	var _copBullets:FlxTypedGroup<CopBullet>;
+	var _bullets:FlxTypedGroup<Bullet>;
 
 	/**
-		@param	bullets	Dynamic type that can be either Cop bullets or Player bullets. The primary difference being that Cop classes don't worry about ammo.
+		@param	bullets	The bullets that are add()ed in PlayState, so that this class can control them.
+		@param	type	0 = player, 1 = cop (cops shoot slower and have infinite ammo)
 	**/
-	public function new(bullets:Dynamic)
+	public function new(bullets:FlxTypedGroup<Bullet>, type:Int)
 	{
-		super();
+		super(type);
 		_MAX_AMMO = 36;
 		ammo = 12;
-		if (bullets is PlayerBullet)
-		{
-			_type = PLAYER;
-			_bullets = bullets;
-		}
-		else
-		{
-			// pass CopBullets in this situation, ALWAYS
-			_type = COP;
-			_copBullets = bullets;
-		}
+
+		_bullets = bullets;
 
 		_canShoot = true;
 		loadSound("assets/sounds/sound_effects/guns/pistol.wav");
@@ -38,15 +29,17 @@ class Pistol extends Gun
 		if (_canShoot)
 		{ // if the gun is not on cooldown
 			_canShoot = false;
-			_timer.start(0.4, doneShooting, 1);
+
 			if (_type == PLAYER && ammo > 0)
 			{ // if gun has ammo
 				// determines the direction the bullet travels
-				f ? _bullets.recycle(PlayerBullet.new).shoot(x, y, -240) : _bullets.recycle(PlayerBullet.new).shoot(x, y, 240);
+				_timer.start(0.4, doneShooting, 1);
+				f ? _bullets.recycle(Bullet.new).shoot(x, y, -240) : _bullets.recycle(Bullet.new).shoot(x, y, 240);
 			}
 			else if (_type == COP)
 			{
-				f ? _copBullets.recycle(CopBullet.new).shoot(x, y, -240) : _copBullets.recycle(CopBullet.new).shoot(x, y, 240);
+				_timer.start(0.8, doneShooting, 1);
+				f ? _bullets.recycle(Bullet.new).copShoot(x, y - 9, -240) : _bullets.recycle(Bullet.new).copShoot(x, y - 9, 240);
 			}
 		}
 	}

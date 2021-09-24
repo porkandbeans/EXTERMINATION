@@ -5,8 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
-import flixel.tweens.misc.ColorTween;
-import flixel.ui.FlxBar;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 
@@ -41,7 +40,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 		_pauseSound = FlxG.sound.load("assets/sounds/sound_effects/ui/pause.wav");
 
-		_healthBar = new FlxBar(10, 5, LEFT_TO_RIGHT, (FlxG.width - 20), 20, null, "_health", 0, 20, true);
+		_healthBar = new FlxBar(10, 15, LEFT_TO_RIGHT, 200, 20, null, "_health", 0, 20, true);
 		_healthBar.createFilledBar(null, FlxColor.GREEN, true, FlxColor.BLACK);
 		_healthBar.alpha = 0;
 		add(_healthBar);
@@ -54,32 +53,16 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 	public function updateBar(x:Float)
 	{
-		_health = x;
-	}
-
-	override public function update(elapsed:Float)
-	{
-		/**
-			TODO: FlxTween this instead
-		**/
-		_healthBar.value = _health;
+		_healthBar.value = x;
 
 		if (_health < 20)
 		{
-			if (_healthBar.alpha < 1)
-			{
-				_healthBar.alpha += 0.1;
-			}
+			FlxTween.tween(_healthBar, {alpha: 1}, 0.33);
 		}
 		else
 		{
-			if (_healthBar.alpha > 0)
-			{
-				_healthBar.alpha -= 0.1;
-			}
+			FlxTween.tween(_healthBar, {alpha: 0}, 0.33);
 		}
-
-		super.update(elapsed);
 	}
 
 	public function updateGun(gun:Int, ammo:Int)

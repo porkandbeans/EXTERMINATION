@@ -95,9 +95,9 @@ class Player extends FlxSprite
 	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>)
 	{
 		_pBullets = pBulls;
-		pistol = new Pistol(_pBullets);
+		pistol = new Pistol(_pBullets, 0);
 		_rBullets = rBulls;
-		rifle = new Rifle(_rBullets);
+		rifle = new Rifle(_rBullets, 0);
 	}
 
 	override public function update(elapsed:Float)
@@ -160,19 +160,22 @@ class Player extends FlxSprite
 	{
 		if (!_attacking)
 		{
-			if (FlxG.keys.anyPressed([LEFT, A]))
+			if (!_crouching)
 			{
-				acceleration.x = -maxVelocity.x * 7;
-				_moving = true;
-			}
-			else if (FlxG.keys.anyPressed([RIGHT, D]))
-			{
-				acceleration.x = maxVelocity.x * 7;
-				_moving = true;
-			}
-			else
-			{
-				_moving = false;
+				if (FlxG.keys.anyPressed([LEFT, A]))
+				{
+					acceleration.x = -maxVelocity.x * 7;
+					_moving = true;
+				}
+				else if (FlxG.keys.anyPressed([RIGHT, D]))
+				{
+					acceleration.x = maxVelocity.x * 7;
+					_moving = true;
+				}
+				else
+				{
+					_moving = false;
+				}
 			}
 
 			// fixes being able to spam jump while in the air
@@ -442,6 +445,19 @@ class Player extends FlxSprite
 	public function takeDmg(dmg:Float)
 	{
 		health -= dmg;
+		hud.updateBar(health);
+		trace(health);
+	}
+
+	public function heal(x:Float)
+	{
+		health += x;
+		hud.updateBar(health);
+	}
+
+	public function setHealth(x:Float)
+	{
+		health = x;
 		hud.updateBar(health);
 	}
 }

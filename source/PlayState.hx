@@ -10,7 +10,6 @@ import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
-import guns.CopBullet;
 import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
@@ -179,6 +178,7 @@ class PlayState extends FlxState
 				obj.active = !obj.active;
 			});
 			_hud.pauseGame();
+			_player.setHealth(10);
 		}
 	}
 
@@ -259,14 +259,14 @@ class PlayState extends FlxState
 	**/
 	function loadMags(cop:Cop)
 	{
-		var copBullets:FlxTypedGroup<CopBullet> = new FlxTypedGroup<CopBullet>(5);
+		var copBullets:FlxTypedGroup<Bullet> = new FlxTypedGroup<Bullet>(5);
 		cop.initPistol(copBullets);
 		add(copBullets);
 		_objects.add(copBullets);
 		_copBullets.add(copBullets);
 	}
 
-	function playerShot(bull:CopBullet, player:Player)
+	function playerShot(bull:Bullet, player:Player)
 	{
 		bull.hurtPlayer(player);
 	}

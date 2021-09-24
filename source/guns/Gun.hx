@@ -6,7 +6,6 @@ import flixel.util.FlxTimer;
 
 enum Type
 {
-	// because I decided to give Cop.hx a Pistol class, I need to deal with some type-specific problems
 	PLAYER;
 	COP;
 }
@@ -23,11 +22,18 @@ class Gun
 	var _click:FlxSound;
 	var _type:Type = PLAYER;
 
-	public function new()
+	public function new(type:Int)
 	{
 		_canShoot = true;
 		_timer = new FlxTimer();
 		_click = FlxG.sound.load("assets/sounds/sound_effects/guns/empty.wav");
+		switch (type)
+		{
+			case 0:
+				_type = PLAYER;
+			case 1:
+				_type = COP;
+		}
 	}
 
 	public function shoot(x:Float, y:Float, f:Bool)
@@ -41,12 +47,11 @@ class Gun
 				ammo = 0;
 				_empty = true;
 			}
-
-			if (_canShoot)
-			{
-				_empty ? _click.play(true) : _shot.play(true);
-				_empty?return:ammo--;
-			}
+		}
+		if (_canShoot)
+		{
+			_empty ? _click.play(true) : _shot.play(true);
+			_empty?return:ammo--;
 		}
 	}
 

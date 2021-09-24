@@ -1,7 +1,7 @@
 package npcs;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
-import guns.CopBullet;
+import guns.Bullet;
 import guns.Pistol;
 
 class Cop extends NPC
@@ -38,8 +38,8 @@ class Cop extends NPC
 	/**
 		Declares the cop's Pistol class (pass it a FlxTypedGroup<Bullet>)
 	**/
-	public function initPistol(bulls:FlxTypedGroup<CopBullet>)
+	public function initPistol(bulls:FlxTypedGroup<Bullet>)
 	{
-		pistol = new Pistol(bulls);
+		pistol = new Pistol(bulls, 1);
 	}
 }

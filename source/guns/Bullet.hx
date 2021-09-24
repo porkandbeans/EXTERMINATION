@@ -2,32 +2,15 @@ package guns;
 
 import flixel.FlxSprite;
 
-enum BulletType
-{
-	PLAYER;
-	COP;
-}
-
 class Bullet extends FlxSprite
 {
-	var _type:BulletType;
 	var _dmg:Float;
 
-	/**
-		@param  type    0 = PLAYER, 1 = COP
-	**/
-	public function new(type:Int)
+	public function new()
 	{
 		super();
 		// makeGraphic(4, 4, FlxColor.WHITE);
 		loadGraphic("assets/images/misc/bullet.png", false, 4, 4);
-		switch (type)
-		{
-			case 0:
-				_type = PLAYER;
-			case 1:
-				_type = COP;
-		}
 	}
 
 	public function shoot(_x:Float, _y:Float, _v:Float)
@@ -37,9 +20,10 @@ class Bullet extends FlxSprite
 		velocity.x = _v;
 	}
 
-	public function getType()
+	public function copShoot(_x:Float, _y:Float, _v:Float)
 	{
-		return _type;
+		setDmg(2);
+		shoot(_x, _y, _v);
 	}
 
 	public function setDmg(_d:Float)
@@ -47,8 +31,14 @@ class Bullet extends FlxSprite
 		_dmg = _d;
 	}
 
+	public function getDmg()
+	{
+		return _dmg;
+	}
+
 	public function hurtPlayer(player:Player)
 	{
+		trace("hurty?");
 		player.takeDmg(_dmg);
 		kill();
 	}

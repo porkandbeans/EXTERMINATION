@@ -7,9 +7,13 @@ class Rifle extends Gun
 {
 	var _bullets:FlxTypedGroup<Bullet>;
 
-	public function new(bullets:FlxTypedGroup<Bullet>)
+	/**
+		@param	bullets	The bullets that are add()ed in PlayState, so that this class can control them.
+		@param	type	0 = player, 1 = cop (cops shoot slower and have infinite ammo)
+	**/
+	public function new(bullets:FlxTypedGroup<Bullet>, type:Int)
 	{
-		super();
+		super(type);
 		_MAX_AMMO = 12;
 		ammo = 6;
 		_bullets = bullets;
@@ -27,11 +31,11 @@ class Rifle extends Gun
 			_timer.start(2, doneShooting, 1);
 			if (f)
 			{ // determines direction bullet will travel
-				_bullets.recycle(PlayerBullet.new).shoot(x, y, -960);
+				_bullets.recycle(Bullet.new).shoot(x, y, -960);
 			}
 			else
 			{
-				_bullets.recycle(PlayerBullet.new).shoot(x, y, 960);
+				_bullets.recycle(Bullet.new).shoot(x, y, 960);
 			}
 		}
 	}
