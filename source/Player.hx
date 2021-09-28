@@ -397,11 +397,11 @@ class Player extends FlxSprite
 				stab();
 				return;
 			case 1:
-				pistol.shoot(_x, _crouching ? (_y + 3) : _y - 2, flipX);
+				pistol.shoot(_x, _crouching ? (_y) : _y - 2, flipX);
 				updateHUD();
 				return;
 			case 2:
-				rifle.shoot(_x, _crouching ? (_y + 3) : _y - 2, flipX);
+				rifle.shoot(_x, _crouching ? (_y) : _y - 2, flipX);
 				updateHUD();
 				return;
 		}

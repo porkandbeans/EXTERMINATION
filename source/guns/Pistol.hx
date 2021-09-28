@@ -35,11 +35,13 @@ class Pistol extends Gun
 				// determines the direction the bullet travels
 				_timer.start(0.4, doneShooting, 1);
 				f ? _bullets.recycle(Bullet.new).shoot(x, y, -240) : _bullets.recycle(Bullet.new).shoot(x, y, 240);
+				trace("player shot");
 			}
 			else if (_type == COP)
 			{
 				_timer.start(0.8, doneShooting, 1);
 				f ? _bullets.recycle(Bullet.new).copShoot(x, y - 9, -240) : _bullets.recycle(Bullet.new).copShoot(x, y - 9, 240);
+				trace("cop shot");
 			}
 		}
 	}
