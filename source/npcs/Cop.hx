@@ -15,13 +15,14 @@ class Cop extends NPC
 		loadGraphic("assets/images/NPCs/cop.png", true, 32, 32);
 
 		init();
+		animation.add("shoot", [16]);
 	}
 
 	override public function triggered()
 	{
 		// stand still and shoot at the player's direction
 		acceleration.x = 0;
-		animation.play("idle");
+		animation.play("shoot");
 		if (_playerPos.x > x)
 		{
 			flipX = false;
