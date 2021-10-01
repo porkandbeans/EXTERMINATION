@@ -38,7 +38,7 @@ class Bullet extends FlxSprite
 
 	public function hurtPlayer(player:Player)
 	{
-		trace("hurty?");
+		// trace("hurty?");
 		player.takeDmg(_dmg);
 		kill();
 	}

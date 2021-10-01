@@ -212,6 +212,15 @@ class PlayState extends FlxState
 		FlxG.overlap(_cops, _bullets, npcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
 		FlxG.overlap(_copBullets, _player, playerShot);
+		FlxG.overlap(_objects, _player, playerObjectOverlap);
+	}
+
+	function playerObjectOverlap(obj:Dynamic, player:Player)
+	{
+		if (obj is Sawblade)
+		{
+			obj.hurtPlayer(player);
+		}
 	}
 
 	// callback when NPCs are shot

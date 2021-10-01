@@ -16,13 +16,13 @@ class SawbladeSpawner extends FlxSprite
 
 		makeGraphic(16, 16, FlxColor.TRANSPARENT);
 
-		sawblade = new Sawblade(this);
+		sawblade = new Sawblade(this, -120);
 
 		shootBlade();
 	}
 
 	function shootBlade()
 	{
-		sawblade.shoot(4);
+		sawblade.shoot();
 	}
 }
