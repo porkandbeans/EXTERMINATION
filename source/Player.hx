@@ -1,24 +1,24 @@
 package;
 
-import flixel.util.FlxColor;
-import flixel.group.FlxGroup;
-import flixel.math.FlxPoint;
-import guns.Rifle;
-import guns.Bullet;
-import guns.Pistol;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
+import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import guns.Bullet;
+import guns.Pistol;
+import guns.Rifle;
 
 class Player extends FlxSprite
 {
 	// === PRIVATE VARS ===
-    var _jumpForce:Float = 80;
+	var _jumpForce:Float = 80;
+
 	var _jumpHold:Int;
-    var _weight:Float = 300;
-    var _grounded:Bool = true;
+	var _weight:Float = 300;
+	var _grounded:Bool = true;
 	var _canJump:Bool;
 	var _canAttack:Bool;
 	var _attacking:Bool;
@@ -27,8 +27,7 @@ class Player extends FlxSprite
 	var _crouching:Bool;
 	var _moving:Bool;
 	var _midPoint:FlxPoint;
-	
-	
+
 	// weapons
 	var _wep_names:Array<String>;
 	var _pBullets:FlxTypedGroup<Bullet>;
@@ -47,9 +46,11 @@ class Player extends FlxSprite
 	var MAX_JUMPHOLD = 20;
 	var MAX_WEAPONS:Int;
 
-    public function new(x:Float = 0, y:Float = 0)
-    {
-        super(x,y);
+	public function new(x:Float = 0, y:Float = 0)
+	{
+		super(x, y);
+
+		health = 20;
 
 		// === WEAPON DECLARATION STUFF ===
 		_wep_names = ["none", "pistol", "rifle"];
@@ -60,9 +61,9 @@ class Player extends FlxSprite
 		hasRifle = false;
 
 		// === PHYSICS STUFF ===
-        maxVelocity.set(160, 200);
-        acceleration.y = _weight;
-        drag.x = maxVelocity.x * 5;
+		maxVelocity.set(160, 200);
+		acceleration.y = _weight;
+		drag.x = maxVelocity.x * 5;
 		_jumpHold = MAX_JUMPHOLD;
 
 		loadGraphic("assets/images/Player/player.png", true, 32, 32);
@@ -71,13 +72,13 @@ class Player extends FlxSprite
 
 		// === ANIMATIONS ===
 		animation.add("idle", [0]);
-		animation.add("run", [1,2,3,4,5,6,7,8], 9, true);
-		animation.add("jump", [9,10], 4, false);
-		animation.add("fall", [11,12], 9, true);
-		animation.add("melee", [13,14,15], 12, false); 
+		animation.add("run", [1, 2, 3, 4, 5, 6, 7, 8], 9, true);
+		animation.add("jump", [9, 10], 4, false);
+		animation.add("fall", [11, 12], 9, true);
+		animation.add("melee", [13, 14, 15], 12, false);
 		animation.add("idlePistol", [16]);
 		animation.add("runPistol", [17, 18, 19, 20, 21, 22, 23, 24], 9, true);
-		animation.add("jumpPistol", [25,26], 4, false);
+		animation.add("jumpPistol", [25, 26], 4, false);
 		animation.add("fallPistol", [27, 28], 9, true);
 		animation.add("idleRifle", [32]);
 		animation.add("runRifle", [33, 34, 35, 36, 37, 38, 39, 40], 9, true);
@@ -89,46 +90,60 @@ class Player extends FlxSprite
 
 		hitreg = new FlxSprite();
 		hitreg.makeGraphic(10, 10, FlxColor.TRANSPARENT);
-    }
+	}
 
-	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>){
+	public function declareBullets(pBulls:FlxTypedGroup<Bullet>, rBulls:FlxTypedGroup<Bullet>)
+	{
 		_pBullets = pBulls;
-		pistol = new Pistol(_pBullets);
+		pistol = new Pistol(_pBullets, 0);
 		_rBullets = rBulls;
-		rifle = new Rifle(_rBullets);
+		rifle = new Rifle(_rBullets, 0);
 	}
 
 	override public function update(elapsed:Float)
 	{
-		if(_attacking){
-			hitreg.active=true;
+		if (_attacking)
+		{
+			hitreg.active = true;
 			hitregPos();
-		}else{
-			hitreg.active=false;
+		}
+		else
+		{
+			hitreg.active = false;
 		}
 		frameInit();
 		keyListeners();
 		animations();
+
+		if (health <= 0)
+		{
+			die();
+		}
 		super.update(elapsed);
 	}
 
-	function hitregPos(){
+	function hitregPos()
+	{
 		_midPoint = getMidpoint();
 		flipX ? hitreg.x = _midPoint.x - 15 : hitreg.x = _midPoint.x + 5;
 		hitreg.y = y + 5;
 	}
 
-	function frameInit(){
-		if(isTouching(FlxObject.FLOOR)){
+	function frameInit()
+	{
+		if (isTouching(FlxObject.FLOOR))
+		{
 			_jumpHold = MAX_JUMPHOLD;
 		}
 
 		acceleration.x = 0;
-        acceleration.y = _weight;
+		acceleration.y = _weight;
 	}
 
-	public function updateHUD(){
-		switch (_heldWeapons[current_weapon]){
+	public function updateHUD()
+	{
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				hud.updateGun(_heldWeapons[current_weapon], 0);
 				return;
@@ -141,60 +156,82 @@ class Player extends FlxSprite
 		}
 	}
 
-	function keyListeners(){
-		if(!_attacking){
-			if (FlxG.keys.anyPressed([LEFT, A])){
-				acceleration.x = -maxVelocity.x * 7;
-				_moving = true;
-			}else if (FlxG.keys.anyPressed([RIGHT, D])){
-				acceleration.x = maxVelocity.x * 7;
-				_moving = true;
-			}else{
-				_moving = false;
+	function keyListeners()
+	{
+		if (!_attacking)
+		{
+			if (!_crouching)
+			{
+				if (FlxG.keys.anyPressed([LEFT, A]))
+				{
+					acceleration.x = -maxVelocity.x * 7;
+					_moving = true;
+				}
+				else if (FlxG.keys.anyPressed([RIGHT, D]))
+				{
+					acceleration.x = maxVelocity.x * 7;
+					_moving = true;
+				}
+				else
+				{
+					_moving = false;
+				}
 			}
-			
+
 			// fixes being able to spam jump while in the air
-			if(FlxG.keys.anyJustReleased([SPACE, W, UP]) && !isTouching(FlxObject.FLOOR)){
+			if (FlxG.keys.anyJustReleased([SPACE, W, UP]) && !isTouching(FlxObject.FLOOR))
+			{
 				_canJump = false;
 			}
 
-			if(isTouching(FlxObject.FLOOR)){
+			if (isTouching(FlxObject.FLOOR))
+			{
 				_canJump = true;
 			}
-	
-			if (FlxG.keys.anyPressed([SPACE, W, UP]) && velocity.y <= 0 && _canJump){
-				if(_jumpHold > 0){
+
+			if (FlxG.keys.anyPressed([SPACE, W, UP]) && velocity.y <= 0 && _canJump)
+			{
+				if (_jumpHold > 0)
+				{
 					_jumpHold -= 1;
 					velocity.y = -_jumpForce;
 				}
 			}
 
-			if(FlxG.keys.pressed.ENTER && _canAttack){
+			if (FlxG.keys.pressed.ENTER && _canAttack)
+			{
 				attack();
 				updateHUD();
 			}
 
-			if(FlxG.keys.justPressed.RBRACKET){
+			if (FlxG.keys.justPressed.RBRACKET)
+			{
 				current_weapon++;
 				cycleWeps();
 				updateHUD();
 			}
-			
-			if (FlxG.keys.justPressed.LBRACKET){
+
+			if (FlxG.keys.justPressed.LBRACKET)
+			{
 				current_weapon--;
 				cycleWeps();
 				updateHUD();
 			}
 
-			if(FlxG.keys.anyPressed([S, DOWN]) && !_moving){
-				if(!_crouching){
+			if (FlxG.keys.anyPressed([S, DOWN]) && !_moving)
+			{
+				if (!_crouching)
+				{
 					_crouching = true;
 					offset.set(8, 16);
 					y = y + 10;
 					setSize(16, 16);
 				}
-			}else{
-				if(_crouching){
+			}
+			else
+			{
+				if (_crouching)
+				{
 					_crouching = false;
 					y = y - 10;
 					offset.set(8, 6);
@@ -202,52 +239,71 @@ class Player extends FlxSprite
 				}
 			}
 		}
-    }
+	}
 
-	function cycleWeps(){
-		if(current_weapon > _heldWeapons.length - 1){
+	function cycleWeps()
+	{
+		if (current_weapon > _heldWeapons.length - 1)
+		{
 			current_weapon = 0;
-		}else if(current_weapon < 0){
+		}
+		else if (current_weapon < 0)
+		{
 			current_weapon = _heldWeapons.length - 1;
 		}
 	}
 
-	function animations(){
-		if(!_attacking){
-			if(velocity.y == 0){
-				if (velocity.x == 0){
-					_crouching?crouch():idle(); 
+	function animations()
+	{
+		if (!_attacking)
+		{
+			if (velocity.y == 0)
+			{
+				if (velocity.x == 0)
+				{
+					_crouching ? crouch() : idle();
 				}
-				else{
+				else
+				{
 					run();
 				}
-			}else{
-				if(velocity.y > -0.7){
+			}
+			else
+			{
+				if (velocity.y > -0.7)
+				{
 					fall();
-					//animation.play("fall");
-				}else if(isTouching(FlxObject.FLOOR)){
+					// animation.play("fall");
+				}
+				else if (isTouching(FlxObject.FLOOR))
+				{
 					jump();
-					//animation.play("jump");
+					// animation.play("jump");
 				}
 			}
 		}
 
-		if (FlxG.keys.anyPressed([LEFT, A])){
+		if (FlxG.keys.anyPressed([LEFT, A]))
+		{
 			flipX = true;
 		}
 
-		if (FlxG.keys.anyPressed([RIGHT, D])){
+		if (FlxG.keys.anyPressed([RIGHT, D]))
+		{
 			flipX = false;
 		}
 
-		if(animation.curAnim == animation.getByName("melee") && animation.finished){
+		if (animation.curAnim == animation.getByName("melee") && animation.finished)
+		{
 			_attacking = false;
 		}
 	}
 
 	// === ANIMATION FUNCTIONS ===
-	function idle(){
-		switch(_heldWeapons[current_weapon]){
+	function idle()
+	{
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				animation.play("idle");
 				return;
@@ -260,8 +316,10 @@ class Player extends FlxSprite
 		}
 	}
 
-	function run(){
-		switch(_heldWeapons[current_weapon]){
+	function run()
+	{
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				animation.play("run");
 				return;
@@ -274,8 +332,10 @@ class Player extends FlxSprite
 		}
 	}
 
-	function jump(){
-		switch(_heldWeapons[current_weapon]){
+	function jump()
+	{
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				animation.play("jump");
 				return;
@@ -288,8 +348,10 @@ class Player extends FlxSprite
 		}
 	}
 
-	function fall(){
-		switch(_heldWeapons[current_weapon]){
+	function fall()
+	{
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				animation.play("fall");
 				return;
@@ -302,9 +364,11 @@ class Player extends FlxSprite
 		}
 	}
 
-	function crouch(){
+	function crouch()
+	{
 		_crouching = true;
-		switch(_heldWeapons[current_weapon]){
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				animation.play("crouch");
 				return;
@@ -317,55 +381,86 @@ class Player extends FlxSprite
 		}
 	}
 
-	function finishAttacking(timer:FlxTimer):Void {
+	function finishAttacking(timer:FlxTimer):Void
+	{
 		_canAttack = true;
 	}
 
-	function attack(){
+	function attack()
+	{
 		var _x:Float = getMidpoint().x;
 		var _y:Float = getMidpoint().y;
-		switch(_heldWeapons[current_weapon]){
+		switch (_heldWeapons[current_weapon])
+		{
 			case 0:
 				hitregPos();
 				stab();
 				return;
 			case 1:
-				pistol.shoot(_x, _crouching?(_y + 3):_y - 2, flipX);
+				pistol.shoot(_x, _crouching ? (_y) : _y - 2, flipX);
 				updateHUD();
 				return;
 			case 2:
-				rifle.shoot(_x, _crouching?(_y + 3):_y - 2, flipX);
+				rifle.shoot(_x, _crouching ? (_y) : _y - 2, flipX);
 				updateHUD();
 				return;
 		}
 	}
 
-	function stab(){
+	function stab()
+	{
 		_attacking = true;
 		_canAttack = false;
 		animation.play("melee");
 		new FlxTimer().start(0.5, finishAttacking, 1);
 	}
 
-	public function pistolRestock(qty:Int){
+	function die()
+	{
+		FlxG.switchState(new MenuState());
+	}
+
+	public function pistolRestock(qty:Int)
+	{
 		pistol.addAmmo(qty);
 	}
 
-	public function rifleRestock(qty:Int){
+	public function rifleRestock(qty:Int)
+	{
 		rifle.addAmmo(qty);
 	}
 
-	public function pickupRifle(){
+	public function pickupRifle()
+	{
 		_heldWeapons = _heldWeapons.concat([2]);
 		hasRifle = true;
 	}
 
-	public function pickupPistol(){
+	public function pickupPistol()
+	{
 		_heldWeapons = _heldWeapons.concat([1]);
 		hasPistol = true;
 	}
-}
 
+	public function takeDmg(dmg:Float)
+	{
+		health -= dmg;
+		hud.updateBar(health);
+		trace(health);
+	}
+
+	public function heal(x:Float)
+	{
+		health += x;
+		hud.updateBar(health);
+	}
+
+	public function setHealth(x:Float)
+	{
+		health = x;
+		hud.updateBar(health);
+	}
+}
 /* TODO
 
 	dynamic stereo sound
@@ -381,9 +476,9 @@ class Player extends FlxSprite
 	add cop voices
 
 	blood particle effects
-	
+
 	use this engine you've made here to make your RPG?
 
 	there really needs to be more sound. footsteps. Player voice. ambience. needs some gameplay music, too.
 
-*/
+ */

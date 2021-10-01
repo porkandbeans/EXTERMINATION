@@ -10,6 +10,8 @@ import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
+import guns.Sawblade;
+import guns.SawbladeSpawner;
 import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
@@ -31,8 +33,8 @@ class PlayState extends FlxState
 	var _player:Player;
 	var _hud:HUD;
 	var _backdrop:FlxBackdrop;
-	var _pistolBullets:FlxTypedGroup<Bullet>;
-	var _rifleBullets:FlxTypedGroup<Bullet>;
+	var _levelPath:String;
+	var _sawBlade:Bullet;
 
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
@@ -44,8 +46,20 @@ class PlayState extends FlxState
 	var _objects:FlxGroup;
 	var _pickups:FlxGroup;
 	var _bullets:FlxGroup;
+	var _copBullets:FlxGroup;
+	var _sawblades:FlxTypedGroup<SawbladeSpawner>;
+
+	// specific groups
 	var _peds:FlxTypedGroup<Ped01>;
 	var _cops:FlxTypedGroup<Cop>;
+	var _pistolBullets:FlxTypedGroup<Bullet>;
+	var _rifleBullets:FlxTypedGroup<Bullet>;
+
+	public function new(dirpath:String)
+	{
+		super();
+		_levelPath = dirpath;
+	}
 
 	override public function create()
 	{
@@ -56,7 +70,7 @@ class PlayState extends FlxState
 		buildings1.scrollFactor.set(.2, 0);
 		add(buildings1);
 		// load the level data
-		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", "assets/levels/NewLevel0.json");
+		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", _levelPath);
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");
 		_tilemap.follow();
 
@@ -103,14 +117,19 @@ class PlayState extends FlxState
 
 		// === BULLETS GROUP ===
 		_bullets = new FlxGroup();
+		_copBullets = new FlxGroup();
 		_bullets.add(_pistolBullets);
 		_bullets.add(_rifleBullets);
+
+		// === SAWBLADES ===
+		_sawblades = new FlxTypedGroup<SawbladeSpawner>();
 
 		_map.loadEntities(placeEntities, "entities");
 		var _addthese = new Array<FlxBasic>();
 
 		_addthese = [
-			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets, _rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols, _player.hitreg
+			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets, _rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols, _player.hitreg,
+			_sawblades
 		];
 
 		for (item in _addthese)
@@ -119,7 +138,8 @@ class PlayState extends FlxState
 		}
 
 		// === ENEMY BULLETS ===
-		_cops.forEach(loadMags);
+		_cops.forEach(loadMags); // always after _copBullets = new...
+		_sawblades.forEach(addBlades);
 
 		super.create();
 	}
@@ -142,6 +162,10 @@ class PlayState extends FlxState
 				_rifles.add(new RiflePickup(entity.x, entity.y));
 			case "pistol":
 				_pistols.add(new PistolPickup(entity.x, entity.y));
+			case "sawbladespawner":
+				trace("added a sawblade");
+				_sawblades.add(new SawbladeSpawner(entity.x, entity.y));
+
 		}
 	}
 
@@ -167,6 +191,7 @@ class PlayState extends FlxState
 				obj.active = !obj.active;
 			});
 			_hud.pauseGame();
+			_player.setHealth(10);
 		}
 	}
 
@@ -186,6 +211,16 @@ class PlayState extends FlxState
 		FlxG.overlap(_peds, _bullets, npcShot);
 		FlxG.overlap(_cops, _bullets, npcShot);
 		FlxG.overlap(_player, _pickups, pickupItem);
+		FlxG.overlap(_copBullets, _player, playerShot);
+		FlxG.overlap(_objects, _player, playerObjectOverlap);
+	}
+
+	function playerObjectOverlap(obj:Dynamic, player:Player)
+	{
+		if (obj is Sawblade)
+		{
+			obj.hurtPlayer(player);
+		}
 	}
 
 	// callback when NPCs are shot
@@ -224,7 +259,7 @@ class PlayState extends FlxState
 
 	function objectCollide(obj1:FlxObject, tmap:FlxTilemap)
 	{
-		if ((obj1 is Bullet))
+		if ((obj1 is Bullet) || (obj1 is Sawblade))
 		{
 			obj1.kill();
 		}
@@ -242,7 +277,7 @@ class PlayState extends FlxState
 	}
 
 	/**
-		declares new FlxTypedGroup<Bullet> for each cop in the playstate, then passes the group to the cop's Pistol class.
+		declares new FlxTypedGroup<CopBullet> for each cop in the playstate, then passes the group to the cop's Pistol class.
 	**/
 	function loadMags(cop:Cop)
 	{
@@ -250,5 +285,19 @@ class PlayState extends FlxState
 		cop.initPistol(copBullets);
 		add(copBullets);
 		_objects.add(copBullets);
+		_copBullets.add(copBullets);
+	}
+
+	function playerShot(bull:Bullet, player:Player)
+	{
+		bull.hurtPlayer(player);
+	}
+	/**
+		adds each sawblade to the scene
+	**/
+	function addBlades(parent:SawbladeSpawner)
+	{
+		add(parent.sawblade);
+		_objects.add(parent.sawblade);
 	}
 }
