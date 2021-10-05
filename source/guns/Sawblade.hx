@@ -66,6 +66,11 @@ class Sawblade extends FlxSprite
 		}
 	}
 
+	override public function update(elapsed:Float)
+	{
+		angle -= 6;
+		super.update(elapsed);
+	}
 	
 
 
