@@ -1,4 +1,4 @@
-package;
+package playstates;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
@@ -144,27 +144,34 @@ class PlayState extends FlxState
 		super.create();
 	}
 
-	function placeEntities(entity:EntityData)
+	public function placeEntities(entity:EntityData)
 	{
 		switch (entity.name)
 		{
 			case "player":
 				_player.setPosition(entity.x, entity.y);
+				return;
 			case "NPC":
 				_peds.add(new Ped01(entity.x - 16, entity.y - 16));
+				return;
 			case "cop":
 				_cops.add(new Cop(entity.x - 16, entity.y - 16));
+				return;
 			case "pistolammo":
 				_pistolAmmo.add(new PistolAmmo(entity.x, entity.y - 4));
+				return;
 			case "rifleammo":
 				_rifleAmmo.add(new RifleAmmo(entity.x, entity.y - 4));
+				return;
 			case "rifle":
 				_rifles.add(new RiflePickup(entity.x, entity.y));
+				return;
 			case "pistol":
 				_pistols.add(new PistolPickup(entity.x, entity.y));
+				return;
 			case "sawbladespawner":
-				trace("added a sawblade");
 				_sawblades.add(new SawbladeSpawner(entity.x, entity.y));
+				return;
 
 		}
 	}
@@ -201,7 +208,7 @@ class PlayState extends FlxState
 		npc.lookForPlayer(_tilemap, _player);
 	}
 
-	function collisions()
+	public function collisions()
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
 		FlxG.overlap(_peds, _player.hitreg, npcStab);
