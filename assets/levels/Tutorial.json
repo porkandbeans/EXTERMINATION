@@ -23,10 +23,14 @@
         {"name": "pistol", "id": 8, "_eid": "35844536", "x": 1616, "y": 240, "originX": 0, "originY": 0},
         {"name": "tutspawn2", "id": 9, "_eid": "67399537", "x": 1536, "y": 240, "originX": 0, "originY": 0},
         {"name": "tutspawn1", "id": 10, "_eid": "67382977", "x": 960, "y": 240, "originX": 0, "originY": 0},
-        {"name": "breakawaywall", "id": 11, "_eid": "67410658", "x": 2192, "y": 208, "originX": 0, "originY": 0},
+        {"name": "break_crate", "id": 11, "_eid": "67410658", "x": 2192, "y": 208, "originX": 0, "originY": 0},
         {"name": "tutspawn3", "id": 12, "_eid": "67434130", "x": 2080, "y": 240, "originX": 0, "originY": 0},
         {"name": "tutorial_target3", "id": 13, "_eid": "67427090", "x": 2256, "y": 240, "originX": 0, "originY": 0},
-        {"name": "rifle", "id": 14, "_eid": "35527679", "x": 2128, "y": 240, "originX": 0, "originY": 0}
+        {"name": "rifle", "id": 14, "_eid": "35527679", "x": 2128, "y": 240, "originX": 0, "originY": 0},
+        {"name": "break_crate", "id": 15, "_eid": "67410658", "x": 2192, "y": 224, "originX": 0, "originY": 0},
+        {"name": "break_crate", "id": 16, "_eid": "67410658", "x": 2192, "y": 240, "originX": 0, "originY": 0},
+        {"name": "break_crate", "id": 17, "_eid": "67410658", "x": 2160, "y": 96, "originX": 0, "originY": 0},
+        {"name": "break_crate", "id": 18, "_eid": "67410658", "x": 272, "y": 112, "originX": 0, "originY": 0}
       ]
     },
     {

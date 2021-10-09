@@ -1,10 +1,10 @@
 package playstates;
 
-import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader.EntityData;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
+import objects.Crate;
 import playstates.tutorial_assets.Tutorial_goal;
 import playstates.tutorial_assets.Tutorial_target;
 
@@ -62,6 +62,7 @@ class Tutorial extends PlayState
 				pistolTarget = new Tutorial_target(entity.x, entity.y);
 				tut_targets.add(pistolTarget);
 				return;
+
 		}
 	}
 

@@ -470,7 +470,7 @@
     },
     {
       "exportID": "67410658",
-      "name": "breakawaywall",
+      "name": "break_crate",
       "limit": -1,
       "size": {"x": 16, "y": 16},
       "origin": {"x": 0, "y": 0},

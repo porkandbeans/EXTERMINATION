@@ -15,6 +15,7 @@ import guns.SawbladeSpawner;
 import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
+import objects.Crate;
 import pickups.Pickup;
 import pickups.ammo.PistolAmmo;
 import pickups.ammo.RifleAmmo;
@@ -36,6 +37,7 @@ class PlayState extends FlxState
 	var _levelPath:String;
 	var _sawBlade:Bullet;
 
+
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
 	var _rifleAmmo:FlxTypedGroup<RifleAmmo>;
@@ -48,6 +50,7 @@ class PlayState extends FlxState
 	var _bullets:FlxGroup;
 	var _copBullets:FlxGroup;
 	var _sawblades:FlxTypedGroup<SawbladeSpawner>;
+	var _crates:FlxTypedGroup<Crate>;
 
 	// specific groups
 	var _peds:FlxTypedGroup<Ped01>;
@@ -66,9 +69,6 @@ class PlayState extends FlxState
 		// set the background image
 		_backdrop = new FlxBackdrop("assets/images/Backgrounds/backdrop.png", 0.5, 0.5, true, 0, 0);
 
-		var buildings1:FlxSprite = new FlxSprite(0, 0, "assets/images/Backgrounds/buildings1.png");
-		buildings1.scrollFactor.set(.2, 0);
-		add(buildings1);
 		// load the level data
 		_map = new FlxOgmo3Loader("assets/levels/hworld.ogmo", _levelPath);
 		_tilemap = _map.loadTilemap("assets/data/tilewall.png", "walls");
@@ -108,6 +108,7 @@ class PlayState extends FlxState
 		_objects.add(_peds);
 		_objects.add(_cops);
 
+
 		// === PICKUPS GROUP ===
 		_pickups = new FlxGroup();
 		_pickups.add(_pistolAmmo);
@@ -121,16 +122,18 @@ class PlayState extends FlxState
 		_bullets.add(_pistolBullets);
 		_bullets.add(_rifleBullets);
 
-		// === SAWBLADES ===
+		// === SAWBLADES AND OTHER STUFF ===
 		_sawblades = new FlxTypedGroup<SawbladeSpawner>();
+		_crates = new FlxTypedGroup<Crate>();
 
 		_map.loadEntities(placeEntities, "entities");
 		var _addthese = new Array<FlxBasic>();
 
 		_addthese = [
 			_backdrop, _tilemap, _peds, _cops, _player, _pistolBullets, _rifleBullets, _hud, _pistolAmmo, _rifleAmmo, _rifles, _pistols, _player.hitreg,
-			_sawblades
+			_sawblades, _crates
 		];
+		_objects.add(_crates);
 
 		for (item in _addthese)
 		{
@@ -172,7 +175,9 @@ class PlayState extends FlxState
 			case "sawbladespawner":
 				_sawblades.add(new SawbladeSpawner(entity.x, entity.y));
 				return;
-
+			case "break_crate":
+				_crates.add(new Crate(entity.x, entity.y));
+				return;
 		}
 	}
 
@@ -191,6 +196,7 @@ class PlayState extends FlxState
 	**/
 	function pauseListen()
 	{
+		FlxG.collide(_player, _tilemap);
 		if (FlxG.keys.justPressed.P)
 		{
 			_objects.forEach((obj:FlxBasic) ->
@@ -211,6 +217,7 @@ class PlayState extends FlxState
 	public function collisions()
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
+		FlxG.collide(_crates, _objects);
 		FlxG.overlap(_peds, _player.hitreg, npcStab);
 		FlxG.overlap(_cops, _player.hitreg, npcStab);
 		FlxG.overlap(_peds, _rifleBullets, riflenpcShot); // check for rifle shots first
