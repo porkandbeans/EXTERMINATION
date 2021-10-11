@@ -218,6 +218,7 @@ class PlayState extends FlxState
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
 		FlxG.collide(_crates, _objects);
+		FlxG.overlap(_crates, _bullets, breakBox);
 		FlxG.overlap(_peds, _player.hitreg, npcStab);
 		FlxG.overlap(_cops, _player.hitreg, npcStab);
 		FlxG.overlap(_peds, _rifleBullets, riflenpcShot); // check for rifle shots first
@@ -228,7 +229,10 @@ class PlayState extends FlxState
 		FlxG.overlap(_copBullets, _player, playerShot);
 		FlxG.overlap(_objects, _player, playerObjectOverlap);
 	}
-
+	function breakBox(box:Crate, bullet:Bullet)
+	{
+		box.kill();
+	}
 	function playerObjectOverlap(obj:Dynamic, player:Player)
 	{
 		if (obj is Sawblade)
