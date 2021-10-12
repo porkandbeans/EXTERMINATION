@@ -5,6 +5,7 @@ import flixel.addons.editors.ogmo.FlxOgmo3Loader.EntityData;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import objects.Crate;
+import objects.Levelgoal;
 import playstates.tutorial_assets.Tutorial_goal;
 import playstates.tutorial_assets.Tutorial_target;
 
@@ -19,11 +20,13 @@ class Tutorial extends PlayState
 	var melee_target:Tutorial_target;
 	var pistol_target:Tutorial_target;
 	var rifle_target:Tutorial_target;
+	var _levelGoals:FlxTypedGroup<Levelgoal>; // triggers a new Playstate to load when the player overlaps this extended FlxSprite, lets keep these level-specific though
 
 	override public function create()
 	{
 		tut_goals = new FlxTypedGroup<Tutorial_goal>();
 		tut_targets = new FlxTypedGroup<Tutorial_target>();
+		_levelGoals = new FlxTypedGroup<Levelgoal>();
 
 		super.create();
 		add(tut_goals);
@@ -31,6 +34,7 @@ class Tutorial extends PlayState
 		add(melee_target);
 		add(pistol_target);
 		add(rifle_target);
+		add(_levelGoals);
 		pistol_target.setPoint(spawnPoint3);
 		rifle_target.setPoint(spawnPoint4);
 
@@ -77,6 +81,9 @@ class Tutorial extends PlayState
 				rifle_target = new Tutorial_target(entity.x, entity.y);
 				tut_targets.add(rifle_target);
 				return;
+			case "level_goal":
+				_levelGoals.add(new Levelgoal(entity.x, entity.y));
+				return;
 
 		}
 	}
@@ -87,6 +94,7 @@ class Tutorial extends PlayState
 		FlxG.overlap(_player, tut_goals, advanceTut1);
 		FlxG.overlap(_player.hitreg, tut_targets, breakTarget);
 		FlxG.overlap(_bullets, tut_targets, advanceTut);
+		FlxG.overlap(_player, _levelGoals, nextLevel);
 	}
 
 	function advanceTut1(obj:Dynamic, obj0:Dynamic) // I don't actually want the params
@@ -105,5 +113,9 @@ class Tutorial extends PlayState
 	{
 		_player.x = spawnPoint2.x;
 		_player.y = spawnPoint2.y - 16;
+	}
+	function nextLevel(obj1:Player, obj2:Levelgoal)
+	{
+		FlxG.switchState(new PlayState("assets/levels/NewLevel1.json"));
 	}
 }

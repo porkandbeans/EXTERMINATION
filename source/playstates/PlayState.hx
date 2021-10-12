@@ -16,6 +16,7 @@ import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
 import objects.Crate;
+import objects.Levelgoal;
 import pickups.Pickup;
 import pickups.ammo.PistolAmmo;
 import pickups.ammo.RifleAmmo;
@@ -36,7 +37,6 @@ class PlayState extends FlxState
 	var _backdrop:FlxBackdrop;
 	var _levelPath:String;
 	var _sawBlade:Bullet;
-
 
 	// pickups
 	var _pistolAmmo:FlxTypedGroup<PistolAmmo>;
