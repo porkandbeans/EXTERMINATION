@@ -2,7 +2,9 @@
 
 https://www.newgrounds.com/projects/games/1728642/preview/filetype/2
 
-If you don't have the password, you're not allowed to see it yet. :)
+There used to be a password. I gave up on the password thing. This has always been open source and you could just compile it from said source, so there's your build. Follow that newgrounds link. It'll get updated kinda frequently whenever there's a breakthrough or something.
+
+This game is really coming together now! It's still a long way from being finished, but it's also come a very long way from just being a jumpy square in a big room. There's bad guys and guns and ammo and breakable boxes and everything now.
 
 Add me on Discord if you wanna help out: GoKritz#6954
 
