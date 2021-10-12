@@ -6,8 +6,6 @@ There used to be a password. I gave up on the password thing. This has always be
 
 This game is really coming together now! It's still a long way from being finished, but it's also come a very long way from just being a jumpy square in a big room. There's bad guys and guns and ammo and breakable boxes and everything now.
 
-Add me on Discord if you wanna help out: GoKritz#6954
-
 ## COMPILING:
 
 You will need an AppID from Newgrounds.com, saved to a file with no extension called ``appId`` in the root directory of the project. The target you want is lime HTML5.
