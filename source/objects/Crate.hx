@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxObject;
 import flixel.FlxSprite;
 
 class Crate extends FlxSprite
@@ -20,5 +21,6 @@ class Crate extends FlxSprite
 	{
 		super.update(elapsed);
 		x = _stayHere;
+		isTouching(FlxObject.FLOOR) ? acceleration.y = 0 : acceleration.y = 300;
 	}
 }
