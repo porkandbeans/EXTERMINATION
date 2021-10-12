@@ -24,6 +24,8 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import haxe.Json;
 import io.newgrounds.NG;
+import playstates.PlayState;
+import playstates.Tutorial;
 // import js.html.FileSystem;
 
 // import js.html.FileSystem;
@@ -241,7 +243,7 @@ class MenuState extends FlxState
 	{
 		save.close();
 		FlxG.sound.music.pause();
-		FlxG.switchState(new PlayState("assets/levels/NewLevel1.json"));
+		FlxG.switchState(new Tutorial("assets/levels/Tutorial.json"));
 	}
 
 	// hides main menu and displays the options menu

@@ -62,7 +62,7 @@ class Player extends FlxSprite
 
 		// === PHYSICS STUFF ===
 		maxVelocity.set(160, 200);
-		acceleration.y = _weight;
+		acceleration.y = _weight; // gravity
 		drag.x = maxVelocity.x * 5;
 		_jumpHold = MAX_JUMPHOLD;
 
@@ -189,7 +189,8 @@ class Player extends FlxSprite
 				_canJump = true;
 			}
 
-			if (FlxG.keys.anyPressed([SPACE, W, UP]) && velocity.y <= 0 && _canJump)
+			// if (FlxG.keys.anyPressed([SPACE, W, UP]) && velocity.y <= 0 && _canJump)
+			if (FlxG.keys.anyPressed([SPACE, W, UP]) && _canJump)
 			{
 				if (_jumpHold > 0)
 				{
@@ -255,11 +256,12 @@ class Player extends FlxSprite
 
 	function animations()
 	{
+		trace("player Y velocity: " + velocity.y);
 		if (!_attacking)
 		{
-			if (velocity.y == 0)
+			if (velocity.y <= 6 && velocity.y >= 0)
 			{
-				if (velocity.x == 0)
+				if (velocity.x < 0.5)
 				{
 					_crouching ? crouch() : idle();
 				}
@@ -270,7 +272,7 @@ class Player extends FlxSprite
 			}
 			else
 			{
-				if (velocity.y > -0.7)
+				if (velocity.y > 6)
 				{
 					fall();
 					// animation.play("fall");
@@ -302,6 +304,7 @@ class Player extends FlxSprite
 	// === ANIMATION FUNCTIONS ===
 	function idle()
 	{
+		// _canJump = true;
 		switch (_heldWeapons[current_weapon])
 		{
 			case 0:

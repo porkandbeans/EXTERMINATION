@@ -19,7 +19,7 @@ class Sawblade extends FlxSprite
 		_parent = parent;
 		_speed = speed;
 
-		makeGraphic(12, 12);
+		loadGraphic("assets/images/misc/sawblade.png", false, 12, 12);
 
 		// calculates the the X and Y co-ordinates to respawn at
 		_spawnPoint = new FlxPoint(_parent.getMidpoint().x - (width / 2), _parent.getMidpoint().y - (height / 2));
@@ -66,6 +66,11 @@ class Sawblade extends FlxSprite
 		}
 	}
 
+	override public function update(elapsed:Float)
+	{
+		angle -= 6;
+		super.update(elapsed);
+	}
 	
 
 
