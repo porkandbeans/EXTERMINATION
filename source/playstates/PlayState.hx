@@ -199,13 +199,43 @@ class PlayState extends FlxState
 		FlxG.collide(_player, _tilemap);
 		if (FlxG.keys.justPressed.P)
 		{
-			_objects.forEach((obj:FlxBasic) ->
-			{
-				obj.active = !obj.active;
-			});
+			freezeToggle();
 			_hud.pauseGame();
 			_player.setHealth(10);
 		}
+
+		if (_hud.getDialogueState())
+		{
+			freezeAll();
+		}
+		else
+		{
+			unfreeze();
+		}
+	}
+
+	function freezeAll()
+	{
+		_objects.forEach((obj:FlxBasic) ->
+		{
+			obj.active = false;
+		});
+	}
+
+	function unfreeze()
+	{
+		_objects.forEach((obj:FlxBasic) ->
+		{
+			obj.active = true;
+		});
+	}
+
+	function freezeToggle()
+	{
+		_objects.forEach((obj:FlxBasic) ->
+		{
+			obj.active = !obj.active;
+		});
 	}
 
 	// === CHECK NPC VISION FOR PLAYER ===

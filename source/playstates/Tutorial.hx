@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader.EntityData;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
+import flixel.util.FlxTimer;
 import objects.Crate;
 import objects.Levelgoal;
 import playstates.tutorial_assets.Tutorial_goal;
@@ -38,7 +39,7 @@ class Tutorial extends PlayState
 		pistol_target.setPoint(spawnPoint3);
 		rifle_target.setPoint(spawnPoint4);
 
-
+		_hud.showDialogue(["This is the tutorial", "This is string 2 of tutorial dialogue"]);
 		// add(_player);
 		/**
 			TODO:
@@ -101,6 +102,11 @@ class Tutorial extends PlayState
 	{
 		_player.x = spawnPoint1.x;
 		_player.y = spawnPoint1.y - 16;
+		new FlxTimer().start(0.1, (timer:FlxTimer) ->
+		{
+			_hud.showDialogue(["I am now testing", "this dialogue window", "hopefully it works!"]);
+		});
+		
 	}
 
 	function advanceTut(obj:Dynamic, targ:Tutorial_target)

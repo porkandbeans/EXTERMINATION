@@ -22,6 +22,8 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	var _pauseTxt:FlxText;
 	var _pauseSound:FlxSound;
 
+	var _dialogueWindow:TextWindow;
+
 	public function new()
 	{
 		super();
@@ -44,6 +46,13 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		_healthBar.createFilledBar(null, FlxColor.GREEN, true, FlxColor.BLACK);
 		_healthBar.alpha = 0;
 		add(_healthBar);
+
+		_dialogueWindow = new TextWindow(10, FlxG.height - 110);
+		add(_dialogueWindow);
+		add(_dialogueWindow._textSprite);
+
+		_dialogueWindow.visible = false;
+		_dialogueWindow._textSprite.visible = false;
 
 		forEach(function(sprite)
 		{ // ???????
@@ -91,5 +100,57 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	{
 		_pauseTxt.visible = !_pauseTxt.visible;
 		_pauseSound.play(true);
+	}
+	public function showDialogue(strings:Array<String>)
+	{
+		_dialogueWindow.visible = true;
+		_dialogueWindow._textSprite.visible = true;
+		_dialogueWindow.setText(strings);
+	}
+
+	public function getDialogueState():Bool
+	{
+		return _dialogueWindow.visible;
+	}
+}
+
+class TextWindow extends FlxSprite
+{
+	var _strings:Array<String>;
+
+	public var _textSprite:FlxText;
+
+	var currentString:Int = 0;
+
+	public function setText(strings:Array<String>)
+	{
+		_strings = strings;
+		_textSprite.text = strings[0];
+	}
+
+	public function new(x:Float, y:Float)
+	{
+		super(x, y);
+		makeGraphic(FlxG.width - 20, 100, FlxColor.BLACK);
+		_textSprite = new FlxText(x, y, this.width);
+	}
+
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+		if (FlxG.keys.anyJustPressed([SPACE]) && visible) // if the dialogue window is currently visible and player just pressed spacebar
+		{
+			currentString++;
+			if (_strings[currentString] != null)
+			{
+				_textSprite.text = _strings[currentString];
+			}
+			else
+			{
+				visible = false;
+				_textSprite.visible = false;
+				currentString = 0;
+			}
+		}
 	}
 }
