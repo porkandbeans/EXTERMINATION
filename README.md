@@ -8,7 +8,7 @@ This game is really coming together now! It's still a long way from being finish
 
 ## COMPILING:
 
-You will need an AppID from Newgrounds.com, saved to a file with no extension called ``appId`` in the root directory of the project. The target you want is lime HTML5.
+You will need an AppID from Newgrounds.com, saved to a file with no extension called ``appId`` in the root directory of the project. The target you want is lime HTML5. You don't actually need the correct API key to compile and run the game. Creating a blank "appId" file in the project root will do.
 
 ## DEPENDENCIES:
 ```

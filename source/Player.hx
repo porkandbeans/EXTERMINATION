@@ -261,7 +261,7 @@ class Player extends FlxSprite
 		{
 			if (velocity.y <= 6 && velocity.y >= 0)
 			{
-				if (velocity.x < 0.5)
+				if (velocity.x >= -0.1 && velocity.x <= 0.1)
 				{
 					_crouching ? crouch() : idle();
 				}
