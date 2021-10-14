@@ -1,3 +1,5 @@
+I need raycasting for my NPCs because I have crates that don't exist on the tilemap and I want them to block raycasts. That's why this branch exists.
+
 # EXTERMINATION
 
 https://www.newgrounds.com/projects/games/1728642/preview/filetype/2
