@@ -50,6 +50,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		_dialogueWindow = new TextWindow(10, FlxG.height - 110);
 		add(_dialogueWindow);
 		add(_dialogueWindow._textSprite);
+		add(_dialogueWindow._contText);
 
 		_dialogueWindow.visible = false;
 		_dialogueWindow._textSprite.visible = false;
@@ -105,6 +106,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 	{
 		_dialogueWindow.visible = true;
 		_dialogueWindow._textSprite.visible = true;
+		_dialogueWindow._contText.visible = true;
 		_dialogueWindow.setText(strings);
 	}
 
@@ -119,6 +121,7 @@ class TextWindow extends FlxSprite
 	var _strings:Array<String>;
 
 	public var _textSprite:FlxText;
+	public var _contText:FlxText;
 
 	var currentString:Int = 0;
 
@@ -133,6 +136,7 @@ class TextWindow extends FlxSprite
 		super(x, y);
 		makeGraphic(FlxG.width - 20, 100, FlxColor.BLACK);
 		_textSprite = new FlxText(x, y, this.width);
+		_contText = new FlxText(x, y + 80, this.width, "~ Press SPACE to continue ~");
 	}
 
 	override public function update(elapsed:Float)
@@ -149,6 +153,7 @@ class TextWindow extends FlxSprite
 			{
 				visible = false;
 				_textSprite.visible = false;
+				_contText.visible = false;
 				currentString = 0;
 			}
 		}
