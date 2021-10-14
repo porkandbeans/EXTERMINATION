@@ -54,6 +54,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
 		_dialogueWindow.visible = false;
 		_dialogueWindow._textSprite.visible = false;
+		_dialogueWindow._contText.visible = false;
 
 		forEach(function(sprite)
 		{ // ???????

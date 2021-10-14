@@ -51,6 +51,7 @@ class PlayState extends FlxState
 	var _copBullets:FlxGroup;
 	var _sawblades:FlxTypedGroup<SawbladeSpawner>;
 	var _crates:FlxTypedGroup<Crate>;
+	var _notBullets:FlxGroup; // EVERYTHING THAT ISN'T A BULLET
 
 	// specific groups
 	var _peds:FlxTypedGroup<Ped01>;
@@ -108,7 +109,6 @@ class PlayState extends FlxState
 		_objects.add(_peds);
 		_objects.add(_cops);
 
-
 		// === PICKUPS GROUP ===
 		_pickups = new FlxGroup();
 		_pickups.add(_pistolAmmo);
@@ -125,6 +125,12 @@ class PlayState extends FlxState
 		// === SAWBLADES AND OTHER STUFF ===
 		_sawblades = new FlxTypedGroup<SawbladeSpawner>();
 		_crates = new FlxTypedGroup<Crate>();
+		_notBullets = new FlxGroup();
+		_notBullets.add(_player);
+		_notBullets.add(_tilemap);
+		_notBullets.add(_peds);
+		_notBullets.add(_cops);
+		_notBullets.add(_crates);
 
 		_map.loadEntities(placeEntities, "entities");
 		var _addthese = new Array<FlxBasic>();
@@ -247,8 +253,9 @@ class PlayState extends FlxState
 	public function collisions()
 	{
 		FlxG.collide(_objects, _tilemap, objectCollide);
-		FlxG.collide(_crates, _objects);
-		FlxG.overlap(_crates, _bullets, breakBox);
+		FlxG.collide(_crates, _notBullets);
+		FlxG.overlap(_crates, _rifleBullets, breakBox);
+		FlxG.overlap(_crates, _pistolBullets, pistolBreakBox);
 		FlxG.overlap(_peds, _player.hitreg, npcStab);
 		FlxG.overlap(_cops, _player.hitreg, npcStab);
 		FlxG.overlap(_peds, _rifleBullets, riflenpcShot); // check for rifle shots first
@@ -259,9 +266,15 @@ class PlayState extends FlxState
 		FlxG.overlap(_copBullets, _player, playerShot);
 		FlxG.overlap(_objects, _player, playerObjectOverlap);
 	}
+
 	function breakBox(box:Crate, bullet:Bullet)
 	{
 		box.kill();
+	}
+	function pistolBreakBox(box:Crate, bullet:Bullet)
+	{
+		box.kill();
+		bullet.kill();
 	}
 	function playerObjectOverlap(obj:Dynamic, player:Player)
 	{
@@ -349,3 +362,7 @@ class PlayState extends FlxState
 		_objects.add(parent.sawblade);
 	}
 }
+/**
+	TODO:
+		crates, bullets, bad. trajectory. Slowdown. fiX! F IX IT!!!
+**/
