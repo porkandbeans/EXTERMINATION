@@ -52,6 +52,7 @@ class PlayState extends FlxState
 	var _sawblades:FlxTypedGroup<SawbladeSpawner>;
 	var _crates:FlxTypedGroup<Crate>;
 	var _notBullets:FlxGroup; // EVERYTHING THAT ISN'T A BULLET
+	var raycastColliders:FlxGroup;
 
 	// specific groups
 	var _peds:FlxTypedGroup<Ped01>;
@@ -150,6 +151,11 @@ class PlayState extends FlxState
 		_cops.forEach(loadMags); // always after _copBullets = new...
 		_sawblades.forEach(addBlades);
 
+		// === HELPER GROUPS ===
+		raycastColliders = new FlxGroup();
+		raycastColliders.add(_tilemap);
+		raycastColliders.add(_crates);
+
 		super.create();
 	}
 
@@ -247,7 +253,8 @@ class PlayState extends FlxState
 	// === CHECK NPC VISION FOR PLAYER ===
 	function checkNPCvision(npc:NPC)
 	{
-		npc.lookForPlayer(_tilemap, _player);
+		// npc.lookForPlayer(_tilemap, _player);
+		npc.flxRayCast(_player.getMidpoint(), npc.getMidpoint(), raycastColliders);
 	}
 
 	public function collisions()
@@ -347,6 +354,7 @@ class PlayState extends FlxState
 		add(copBullets);
 		_objects.add(copBullets);
 		_copBullets.add(copBullets);
+		add(cop.raycastSprite);
 	}
 
 	function playerShot(bull:Bullet, player:Player)

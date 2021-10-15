@@ -256,7 +256,7 @@ class Player extends FlxSprite
 
 	function animations()
 	{
-		trace("player Y velocity: " + velocity.y);
+		// trace("player Y velocity: " + velocity.y);
 		if (!_attacking)
 		{
 			if (velocity.y <= 6 && velocity.y >= 0)

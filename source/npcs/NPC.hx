@@ -3,10 +3,12 @@ package npcs;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRandom;
 import flixel.system.FlxSound;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
 enum State
@@ -30,6 +32,7 @@ class NPC extends FlxSprite
 	var _state(default, null):State;
 	var _playerPos:FlxPoint;
 	var _walkSpeed = 60;
+	public var raycastSprite:FlxSprite;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -45,6 +48,8 @@ class NPC extends FlxSprite
 		maxVelocity.set(60, 200);
 		acceleration.y = _weight;
 		drag.x = maxVelocity.x * 5;
+		raycastSprite = new FlxSprite();
+		raycastSprite.makeGraphic(0, 1, FlxColor.TRANSPARENT);
 	}
 
 	override public function update(elapsed:Float)
@@ -88,6 +93,45 @@ class NPC extends FlxSprite
 			_state = IDLE;
 			_walkSpeed = 60;
 		}
+	}
+
+	var xdistance:Float;
+	var ydistance:Float;
+	var c2:Float;
+	var hyp:Float;
+	var tan:Float;
+	var intan:Float;
+	var toDegs:Float;
+
+	/**
+		casts a ray from one FlxPoint to the next. Returns TRUE if nothing collides with the ray and FALSE if the view is obstructed
+		@param	pos1	the starting point of the raycast
+		@param	pos2	the end point of the raycast
+		@param	objects	a FlxGroup containing the objects you want the raycast to be obstructed by
+	**/
+	public function flxRayCast(pos1:FlxPoint, pos2:FlxPoint, objects:FlxGroup)
+	{
+		raycastSprite.x = pos1.x;
+		raycastSprite.y = pos1.y;
+		xdistance = pos1.x - pos2.x;
+		if (xdistance < 0)
+		{
+			xdistance = -xdistance;
+		}
+
+		ydistance = pos1.y - pos2.y;
+
+		// pythagorean theorum (a^2 + b^2 = c^2)
+		c2 = ((xdistance * xdistance) + (ydistance * ydistance));
+
+		// square root the c^2 and we have the distance between pos1 and pos2 (or the hypotenuse)
+		hyp = Math.sqrt(c2);
+		raycastSprite.width = hyp;
+
+		toDegs = 180 / Math.PI * Math.atan2(ydistance, xdistance);
+
+		raycastSprite.angle = toDegs;
+		trace(toDegs);
 	}
 
 	/**
