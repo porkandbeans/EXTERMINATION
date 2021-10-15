@@ -49,7 +49,7 @@ class NPC extends FlxSprite
 		acceleration.y = _weight;
 		drag.x = maxVelocity.x * 5;
 		raycastSprite = new FlxSprite();
-		raycastSprite.makeGraphic(0, 1, FlxColor.TRANSPARENT);
+		raycastSprite.makeGraphic(10, 10, FlxColor.WHITE);
 	}
 
 	override public function update(elapsed:Float)
@@ -130,7 +130,7 @@ class NPC extends FlxSprite
 
 		toDegs = 180 / Math.PI * Math.atan2(ydistance, xdistance);
 
-		raycastSprite.angle = toDegs;
+		raycastSprite.angle = -toDegs;
 		trace(toDegs);
 	}
 
