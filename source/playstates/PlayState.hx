@@ -8,10 +8,12 @@ import flixel.FlxState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.group.FlxGroup;
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import guns.Bullet;
 import guns.Sawblade;
 import guns.SawbladeSpawner;
+import lime.math.Vector2;
 import npcs.Cop;
 import npcs.NPC;
 import npcs.Ped01;
@@ -84,6 +86,10 @@ class PlayState extends FlxState
 		_cops = new FlxTypedGroup<Cop>();
 		_player = new Player();
 
+		// these are used by the NPCs to check distance between themselves and the player
+		_playerPosPoint = new FlxPoint();
+		_playerPosVector = new Vector2();
+
 		// === GUN STUFF ===
 		_pistolBullets = new FlxTypedGroup<Bullet>(20);
 		_rifleBullets = new FlxTypedGroup<Bullet>(12);
@@ -149,6 +155,7 @@ class PlayState extends FlxState
 		// === ENEMY BULLETS ===
 		_cops.forEach(loadMags); // always after _copBullets = new...
 		_sawblades.forEach(addBlades);
+
 
 		super.create();
 	}
@@ -244,10 +251,14 @@ class PlayState extends FlxState
 		});
 	}
 
+	var _playerPosVector:Vector2;
+	var _playerPosPoint:FlxPoint;
 	// === CHECK NPC VISION FOR PLAYER ===
 	function checkNPCvision(npc:NPC)
 	{
-		npc.lookForPlayer(_tilemap, _player);
+		_playerPosPoint = _player.getMidpoint();
+		_playerPosVector.setTo(_playerPosPoint.x, _playerPosPoint.y);
+		npc.lookForPlayer(_playerPosVector);
 	}
 
 	public function collisions()

@@ -8,6 +8,7 @@ import flixel.math.FlxRandom;
 import flixel.system.FlxSound;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxTimer;
+import lime.math.Vector2;
 
 enum State
 { // gonna declare this new state enum so I can tell the code when the NPC is supposed to be idle, and if it's not idle it will have behaviour to follow in child classes
@@ -30,6 +31,7 @@ class NPC extends FlxSprite
 	var _state(default, null):State;
 	var _playerPos:FlxPoint;
 	var _walkSpeed = 60;
+	var thisPos:Vector2;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -42,6 +44,9 @@ class NPC extends FlxSprite
 
 		_random = new FlxRandom();
 
+		_playerPos = new FlxPoint();
+		thisPos = new Vector2(x, y);
+
 		maxVelocity.set(60, 200);
 		acceleration.y = _weight;
 		drag.x = maxVelocity.x * 5;
@@ -50,7 +55,7 @@ class NPC extends FlxSprite
 	override public function update(elapsed:Float)
 	{
 		physics();
-
+		thisPos.setTo(x, y);
 		if (alive)
 		{
 			if (_state == IDLE)
@@ -67,16 +72,22 @@ class NPC extends FlxSprite
 		super.update(elapsed);
 	}
 
-	/**
-	 * Casts a ray to look for the player and sets _state to TRIGGERED if so.
-	 *   
-	 * @param  walls    the flxtilemap data of the current level
-	 *
-	 * @param  player   the player class that handles all the interactive stuff
-	 */
-	public function lookForPlayer(walls:FlxTilemap, player:Player)
+	public function lookForPlayer(playerPos:Vector2)
 	{
-		_playerPos = player.getMidpoint(); // grab this while I'm here
+		_playerPos.x = playerPos.x;
+		_playerPos.y = playerPos.y;
+
+		if (Vector2.distance(playerPos, thisPos) > 100)
+		{
+			_state = IDLE;
+			_walkSpeed = 60;
+		}
+		else
+		{
+			_state = TRIGGERED;
+			_walkSpeed = 120;
+		}
+		/*_playerPos = player.getMidpoint(); // grab this while I'm here
 
 		if (walls.ray(this.getMidpoint(), _playerPos))
 		{
@@ -87,7 +98,7 @@ class NPC extends FlxSprite
 		{
 			_state = IDLE;
 			_walkSpeed = 60;
-		}
+		}*/
 	}
 
 	/**
