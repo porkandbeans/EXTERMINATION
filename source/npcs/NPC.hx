@@ -130,8 +130,18 @@ class NPC extends FlxSprite
 
 		toDegs = 180 / Math.PI * Math.atan2(ydistance, xdistance);
 
-		raycastSprite.angle = -toDegs;
-		trace(toDegs);
+		raycastSprite.set_angle(toDegs);
+
+		if (FlxG.overlap(raycastSprite, objects))
+		{
+			trace("there was an overlap");
+			return false;
+		}
+		else
+		{
+			trace("no overlaps");
+			return true;
+		}
 	}
 
 	/**
